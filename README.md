@@ -1,4 +1,4 @@
-# conduit
+# Conduit
 An all-batteries-included vanilla js frontend framework with client-side routing for
 creating edge-hosted static bundles that interact with an external API server.
 
