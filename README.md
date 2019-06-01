@@ -24,7 +24,8 @@ creating edge-hosted static bundles that interact with an external API server.
 # Legal
 
 ## UglifyJS
-Note that conduit packages a binary form of the UglifyJS NPM package. UglifyJS
+Note that conduit packages a binary form of the [UglifyJS]()
+NPM package. UglifyJS
 is licensed under the BSD-2-Clause license, which requires that we include the
 following legal info in our documentation in order to use UglifyJS:
 
@@ -60,7 +61,8 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 ```
 ## Crass
-Note that conduit packages a binary form of the crass NPM package. Crass
+Note that conduit packages a binary form of the
+[crass](https://www.npmjs.com/package/crass) NPM package. Crass
 is licensed under the MIT license, which requires that we include the
 following legal info in our application:
 
