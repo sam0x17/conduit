@@ -8,6 +8,11 @@ targets:
   conduit:
     main: src/conduit.cr
 
+dependencies:
+  baked_file_system:
+    github: schovi/baked_file_system
+    version: 0.9.8
+
 crystal: 0.28.0
 
 license: MIT

@@ -59,14 +59,21 @@ echo ""
 echo "compressing platform-specific binaries..."
 mkdir -p linux-packages || exit 1
 mkdir -p macos-packages || exit 1
+rm linux-packages/* -rf || exit 1
+rm macos-packages/* -rf || exit 1
 mv *-linux linux-packages/ || exit 1
 mv *-macos macos-packages/ || exit 1
+rm *.tar.gz || exit 1
 tar -zcvf linux-packages.tar.gz linux-packages || exit 1
 tar -zcvf macos-packages.tar.gz macos-packages || exit 1
 echo ""
 ls -lh linux-packages.tar.gz 
 ls -lh macos-packages.tar.gz
 rm linux-packages macos-packages -rf || exit 1
+mkdir -p linux-packages || exit 1
+mkdir -p macos-packages || exit 1
+mv linux-packages.tar.gz linux-packages/packages.tar.gz || exit 1
+mv macos-packages.tar.gz macos-packages/packages.tar.gz || exit 1
 echo ""
 echo "done."
 echo ""
