@@ -27,6 +27,7 @@ module Conduit::Minifiers
 
   def self.initialize
     if !File.exists?(PKG_DIR) || Time.now - File.info(PKG_DIR).modification_time > 1.week
+      puts " > updaing minifier binaries"
       FileUtils.mkdir_p(PKG_DIR)
       FileUtils.rm_rf("#{PKG_DIR}/*")
       File.write(PKG_DIR + "/packages.tar.gz", MinifierStorage.get("packages.tar.gz").gets_to_end)
