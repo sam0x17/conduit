@@ -21,7 +21,7 @@ module Conduit::Minifiers
     {% elsif flag?(:darwin) %}
       bake_folder "../bin/macos-packages"
     {% else %}
-      raise 'unsupported platform'
+      raise "unsupported platform"
     {% end %}
   end
 
