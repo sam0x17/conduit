@@ -15,6 +15,6 @@ dependencies:
   assert:
     github: sam0x17/assert.cr
 
-crystal: 0.28.0
+crystal: 0.29.0
 
 license: MIT
