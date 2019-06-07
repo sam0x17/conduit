@@ -8,7 +8,7 @@ node --version || exit 1
 npm --version || exit 1
 echo ""
 echo "installing pkg (if not already installed)..."
-npm install -g pkg || exit
+pkg --version || npm install -g pkg || exit
 echo ""
 mkdir -p /tmp/conduit-mini-generator || exit 1
 rm -rf /tmp/conduit-mini-generator/* || exit 1
