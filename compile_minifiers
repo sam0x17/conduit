@@ -25,16 +25,17 @@ mv uglify-js $ORIG/bin/uglify-js-macos || exit 1
 cd .. || exit 1
 rm uglify-js -rf || exit 1
 echo ""
-echo "generating binaries for crass..."
-git clone git@github.com:mattbasta/crass.git || exit 1
-cd crass || exit 1
+echo "generating binaries for clean-css-cli..."
+git clone git@github.com:jakubpawlowicz/clean-css-cli.git || exit 1
+cd clean-css-cli || exit 1
+git checkout `git describe --tags` || exit 1
 npm install || exit 1
 pkg -t node10-linux . || exit 1
-mv crass $ORIG/bin/crass-linux || exit 1
+mv clean-css-cli $ORIG/bin/clean-css-linux || exit 1
 pkg -t node10-macos . || exit 1
-mv crass $ORIG/bin/crass-macos || exit 1
+mv clean-css-cli $ORIG/bin/clean-css-macos || exit 1
 cd .. || exit 1
-rm crass -rf || exit 1
+rm clean-css-cli -rf || exit 1
 echo ""
 echo "generating binaries for html-minifier..."
 git clone git@github.com:kangax/html-minifier.git || exit 1
@@ -50,9 +51,14 @@ rm html-minifier -rf || exit 1
 cd $ORIG || exit 1
 cd bin || exit 1
 echo ""
+echo "verifying that linux packages work..."
+./clean-css-linux --version || exit 1
+./html-minifier-linux --version || exit 1
+./uglify-js-linux --version || exit 1
+echo ""
 echo "compressing platform-specific binaries..."
-mkdir linux-packages || exit 1
-mkdir macos-packages || exit 1
+mkdir -p linux-packages || exit 1
+mkdir -p macos-packages || exit 1
 mv *-linux linux-packages/ || exit 1
 mv *-macos macos-packages/ || exit 1
 tar -zcvf linux-packages.tar.gz linux-packages || exit 1
