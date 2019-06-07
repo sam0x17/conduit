@@ -63,7 +63,7 @@ rm linux-packages/* -rf || exit 1
 rm macos-packages/* -rf || exit 1
 mv *-linux linux-packages/ || exit 1
 mv *-macos macos-packages/ || exit 1
-rm *.tar.gz || exit 1
+rm *.tar.gz
 tar -zcvf linux-packages.tar.gz linux-packages || exit 1
 tar -zcvf macos-packages.tar.gz macos-packages || exit 1
 echo ""
