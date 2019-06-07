@@ -14,9 +14,9 @@ mkdir -p /tmp/conduit-mini-generator || exit 1
 rm -rf /tmp/conduit-mini-generator/* || exit 1
 cd /tmp/conduit-mini-generator || exit 1
 echo "generating binaries for uglifyjs..."
-
-git clone git@github.com:mishoo/UglifyJS2.git --branch `git describe --tags` --single-branch || exit 1
+git clone git@github.com:mishoo/UglifyJS2.git || exit 1
 cd UglifyJS2 || exit 1
+git checkout `git describe --tags` || exit 1
 npm install || exit 1
 pkg -t node10-linux . || exit 1
 mv uglify-js $ORIG/bin/uglify-js-linux || exit 1
@@ -37,8 +37,9 @@ cd .. || exit 1
 rm crass -rf || exit 1
 echo ""
 echo "generating binaries for html-minifier..."
-echo git clone git@github.com:kangax/html-minifier.git --branch `git describe --tags` --single-branch
+git clone git@github.com:kangax/html-minifier.git || exit 1
 cd html-minifier || exit 1
+git checkout `git describe --tags` || exit 1
 npm install || exit 1
 pkg -t node10-linux . || exit 1
 mv html-minifier $ORIG/bin/html-minifier-linux || exit 1
