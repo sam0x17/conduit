@@ -4,7 +4,15 @@ function conduit_setHTML(target, html) {
   target.innerHTML = html;
   var scripts = target.getElementsByTagName('script');
   for(var i = 0; i < scripts.length; ++i) {
-    window.eval(scripts[i].innerHTML)
+    var script = scripts[i];
+    var src = script.src;
+    var innerHTML = script.innerHTML;
+    var parentNode = script.parentNode;
+    parentNode.removeChild(script);
+    script = document.createElement('script');
+    if(src != '') script.src = src;
+    script.innerHTML = innerHTML;
+    parentNode.appendChild(script);
   }
 }
 
@@ -32,3 +40,5 @@ function conduit_ajax(method, url, form, successCallback, failureCallback) {
   xhr.open(method, url, true);
   xhr.send();
 }
+
+var HTML = "<script>console.log('this from innerhtml');</script><h1>another title yay!</h1>";

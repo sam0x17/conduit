@@ -2,9 +2,15 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <script>var x = 23;</script>
     <script src="conduit.js"></script>
   </head>
   <body>
     <h1>Hello World</h1>
+    <div class="the-target"></div>
+    <script>
+      var elem = document.getElementsByClassName('the-target')[0];
+      conduit_setHTML(elem, HTML);
+    </script>
   </body>
 </html>
