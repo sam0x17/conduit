@@ -40,5 +40,3 @@ function conduit_ajax(method, url, form, successCallback, failureCallback) {
   xhr.open(method, url, true);
   xhr.send();
 }
-
-var HTML = "<script>console.log('this from innerhtml');</script><h1>another title yay!</h1>";
