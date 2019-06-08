@@ -11,7 +11,6 @@ targets:
 dependencies:
   baked_file_system:
     github: schovi/baked_file_system
-    version: 0.9.8
   assert:
     github: sam0x17/assert.cr
   kemal:
