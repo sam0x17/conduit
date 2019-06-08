@@ -45,8 +45,73 @@
     xhr.send();
   }
 
+  function filterPath(path) {
+    if(path.endsWith('/')) path = path.substr(0, path.length - 2);
+    if(path == '') path = '/';
+    return path;
+  }
+
+  function getCurrentPath() {
+    var path = window.location.pathname;
+    return filterPath(path);
+  }
+
+  function isDigits(str) {
+    for(var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i);
+      if(code < 48 || code > 57) return false;
+    }
+    return true;
+  }
+
+  function isAlphaName(str) {
+    for(var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i);
+      if(code == 45 || code == 95) continue;
+      if(code >= 65 || code <= 90) continue;
+      if(code >= 97 || code <= 122) continue;
+      return false;
+    }
+    return true;
+  }
+
+  function matchFormat(format) {
+    format = filterPath(format);
+    var fparts = format.split('/');
+    if(fparts.length != cparts.length) return false;
+    var matchedParts = {};
+    for(var i = 0; i < cparts.length; i++) {
+      var cpart = cparts[i];
+      var fpart = fparts[i];
+      if(cpart == fpart) continue;
+      if(fpart.startsWith(':') && isDigits(cpart)) {
+        var label = fpart.substr(1, fpart.length - 2);
+        matchedParts[label] = parseInt(cpart);
+        continue;
+      } else if(fpart.startsWith('#') && isAlphaName(cpart)) {
+        var label = fpart.substr(1, fpart.length - 2);
+        matchedParts[label] = cpart;
+        continue;
+      }
+      return false;
+    }
+    return matchedParts
+  }
+
+  // e.g.: route('/users/:id/#otherpart/', 'blog/entry.html', function(parts) { return parts.id == 23; })
+  function route(format, target, condition) {
+    var matchedParts = matchFormat(format);
+    if(!matchedParts) return;
+    if(!condition || condition(matchedParts, currentPath)) {
+      console.log('match successful, mapped to: ', target);
+    }
+  }
+
+  var currentPath = getCurrentPath();
+  var cparts = currentPath.split('/');
   window.conduit = {
     ajax: ajax,
-    setHTML: setHTML
+    setHTML: setHTML,
+    route: route
   }
 })();
