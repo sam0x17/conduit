@@ -1,3 +1,3 @@
 
-conduit.route('/widgets/:id/show', 'test_view_1', 'A Widget');
-conduit.route('/users/:id/edit', 'testView2', 'A User');
+conduit.route('/widgets/:id/show', 'widgets', 'A Widget');
+conduit.route('/users/:id/edit', 'users', 'A User');
