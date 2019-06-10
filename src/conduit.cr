@@ -1,7 +1,6 @@
 require "assert"
 require "./minifiers"
 require "./devserver"
-require "uri"
 
 module Conduit
   def self.compile_views(test_mode=false)
@@ -17,7 +16,7 @@ module Conduit
       else
         view = minify_html(path)
       end
-      view = URI.escape(view)
+      view = Base64.strict_encode(view)
       path = path[8..]
       path = path[..(path.size - 6)] if path.ends_with?(".html")
       views_str += "\"#{path}\":\"#{view}\",\n"

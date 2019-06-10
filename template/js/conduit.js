@@ -114,7 +114,7 @@ String.prototype.replaceAll = function(search, replacement) {
       document.getElementsByTagName('title')[0].innerHTML = title;
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
-      html = decodeURI(html);
+      html = atob(html);
       setHTML(document.body, html);
     }
   }
