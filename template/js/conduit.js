@@ -16,7 +16,7 @@ String.prototype.replaceAll = function(search, replacement) {
       var parentNode = script.parentNode;
       parentNode.removeChild(script);
       script = document.createElement('script');
-      if(src != '') script.src = src;window.CONDUIT_VIEWS = 
+      if(src != '') script.src = src;
       script.innerHTML = innerHTML;
       parentNode.appendChild(script);
     }
@@ -103,7 +103,7 @@ String.prototype.replaceAll = function(search, replacement) {
     return matchedParts
   }
 
-  // e.g.: route('/users/:id/#otherpart/', 'blog/entry.html', function(parts) { return parts.id == 23; })
+  // e.g.: route('/users/:id/#otherpart/', 'blog/entry', 'my page title, function(parts) { return parts.id == 23; })
   function route(format, target, title, condition) {
     var matchedParts = matchFormat(format);
     if(!matchedParts) return;
