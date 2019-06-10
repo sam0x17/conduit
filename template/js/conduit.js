@@ -34,21 +34,6 @@ String.prototype.replaceAll = function(search, replacement) {
     }
     return url;
   }
-  
-  function ajax(method, url, form, successCallback, failureCallback) {
-    if(!failureCallback) failureCallback = function(response) {
-      console.error('AJAX request failed: ', response);
-    };
-    var xhr = new XMLHttpRequest();
-    url += stringifyForm(form);
-    xhr.onreadystatechange = function() {
-      if(this.readyState != 4) return;
-      if(this.status == 200) successCallback(this.responseText);
-      else failureCallback(this);
-    };
-    xhr.open(method, url, true);
-    xhr.send();
-  }
 
   function filterPath(path) {
     if(path.endsWith('/')) path = path.substr(0, path.length - 2);
@@ -119,11 +104,64 @@ String.prototype.replaceAll = function(search, replacement) {
     }
   }
 
+  function trueViewportHeight() {
+    return Math.min(document.documentElement.clientHeight, window.screen.height, window.innerHeight);
+  }
+
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+  
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+  
+  function clearCookies(){
+    var cookies = document.cookie.split(";");
+    for(var i = 0; i < cookies.length; i++){   
+      var spcook =  cookies[i].split("=");
+      document.cookie = spcook[0] + "=;expires=Thu, 21 Sep 1979 00:00:01 UTC;";                                
+    }
+  }
+
+  function ajax(method, url, form, successCallback, failureCallback) {
+    if(!failureCallback) failureCallback = function(response) {
+      console.error('AJAX request failed: ', response);
+    };
+    var xhr = new XMLHttpRequest();
+    url += stringifyForm(form);
+    xhr.onreadystatechange = function() {
+      if(this.readyState != 4) return;
+      if(this.status == 200) successCallback(this.responseText);
+      else failureCallback(this);
+    };
+    xhr.open(method, url, true);
+    xhr.send();
+  }
+
   var currentPath = getCurrentPath();
   var cparts = currentPath.split('/');
   window.conduit = {
     ajax: ajax,
     setHTML: setHTML,
-    route: route
-  }
+    route: route,
+    trueViewportHeight: trueViewportHeight,
+    setCookie: setCookie,
+    getCookie: getCookie,
+    clearCookies: clearCookies
+  };
 })();
