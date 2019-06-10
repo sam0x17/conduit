@@ -16,7 +16,7 @@ module Conduit
       views_str += "\"#{path}\":\"#{view}\",\n"
     end
     views_str = views_str[..(views_str.size - 3)] + "\n}"
-    router_html.gsub("{{views}}", views_str)
+    router_html.gsub("'{{views}}'", views_str)
   end
 
   private def self.find_files(path, &block : String ->)
