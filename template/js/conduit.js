@@ -109,8 +109,8 @@ String.prototype.replaceAll = function(search, replacement) {
     if(!matchedParts) return;
     if(!condition || condition(matchedParts, currentPath)) {
       console.log('routed to: ', target + ', title="' + title + '"');
-      conduit.pathFragments = matchedParts;
-      console.log('path fragments: ', conduit.pathFragments);
+      conduit.pathVariables = matchedParts;
+      console.log('path variables: ', conduit.pathVariables);
       document.getElementsByTagName('title')[0].innerHTML = title;
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
