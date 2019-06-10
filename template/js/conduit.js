@@ -90,11 +90,11 @@ String.prototype.replaceAll = function(search, replacement) {
       var fpart = fparts[i];
       if(cpart == fpart) continue;
       if(fpart.startsWith(':') && isDigits(cpart)) {
-        var label = fpart.substr(1, fpart.length - 2);
+        var label = fpart.substr(1, fpart.length - 1);
         matchedParts[label] = parseInt(cpart);
         continue;
       } else if(fpart.startsWith('#') && isAlphaName(cpart)) {
-        var label = fpart.substr(1, fpart.length - 2);
+        var label = fpart.substr(1, fpart.length - 1);
         matchedParts[label] = cpart;
         continue;
       }
@@ -104,11 +104,18 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
   // e.g.: route('/users/:id/#otherpart/', 'blog/entry.html', function(parts) { return parts.id == 23; })
-  function route(format, target, condition) {
+  function route(format, target, title, condition) {
     var matchedParts = matchFormat(format);
     if(!matchedParts) return;
     if(!condition || condition(matchedParts, currentPath)) {
-      console.log('match successful, mapped to: ', target);
+      console.log('routed to: ', target + ', title="' + title + '"');
+      conduit.pathFragments = matchedParts;
+      console.log('path fragments: ', conduit.pathFragments);
+      document.getElementsByTagName('title')[0].innerHTML = title;
+      var html = conduit.VIEWS[target];
+      if(!html) throw 'could not find pre-compiled template for "' + target + '"';
+      html = decodeURI(html);
+      setHTML(document.body, html);
     }
   }
 

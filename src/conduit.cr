@@ -1,6 +1,7 @@
 require "assert"
 require "./minifiers"
 require "./devserver"
+require "uri"
 
 module Conduit
   def self.compile_views(test_mode=false)
@@ -15,7 +16,8 @@ module Conduit
         view = File.read(path)
       else
         view = minify_html(path)
-      view = view.gsub("\"", "\\\"").gsub("\n", "\\n")
+      end
+      view = URI.escape(view)
       path = path[8..]
       path = path[..(path.size - 6)] if path.ends_with?(".html")
       views_str += "\"#{path}\":\"#{view}\",\n"
