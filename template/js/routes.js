@@ -7,8 +7,8 @@
 // conduit.route('/widgets/:id/show', 'widgets', 'A Widget');
 // conduit.route('/users/:id/edit', 'some/path/users', 'A User');
 //
-// conduit.route('/blogs/#article_name', 'blog/article', 'Blog Article', function(urlVariables) {
-//   console.log('article name: ', urlVariables.article_name);
+// conduit.route('/blogs/#article_name', 'blog/article', 'Blog Article', function(parts) {
+//   console.log('article name: ', parts.article_name);
 //   return urlVariables.startsWith('Tutorial: ');
 // });
 //
