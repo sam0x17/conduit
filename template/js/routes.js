@@ -9,6 +9,6 @@
 //
 // conduit.route('/blogs/#article_name', 'blog/article', 'Blog Article', function(parts) {
 //   console.log('article name: ', parts.article_name);
-//   return urlVariables.startsWith('Tutorial: ');
+//   return parts.article_name.startsWith('Tutorial: ') && getCookie('some_key') == 'some_value';
 // });
 //
