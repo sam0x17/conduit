@@ -1,5 +1,10 @@
 // conduit main bootstrap file
 
+String.prototype.replaceAll = function(search, replacement) {
+  var target = this;
+  return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 (function() {
   function setHTML(target, html) {
     target.innerHTML = html;
@@ -11,7 +16,7 @@
       var parentNode = script.parentNode;
       parentNode.removeChild(script);
       script = document.createElement('script');
-      if(src != '') script.src = src;
+      if(src != '') script.src = src;window.CONDUIT_VIEWS = 
       script.innerHTML = innerHTML;
       parentNode.appendChild(script);
     }

@@ -11,7 +11,7 @@ module Conduit::Minifiers
   CLEAN_CSS_PATH = "#{PKG_DIR}/#{PLATFORM}-packages/clean-css-#{PLATFORM}"
   HTML_MINIFIER_PATH = "#{PKG_DIR}/#{PLATFORM}-packages/html-minifier-#{PLATFORM}"
   UGLIFY_PATH = "#{PKG_DIR}/#{PLATFORM}-packages/uglify-js-#{PLATFORM}"
-  HTML_MINIFIER_OPTIONS = "--case-sensitive --conservative-collapse --minify-css=true --minify-js=true --use-short-doctype"
+  HTML_MINIFIER_OPTIONS = "--case-sensitive --conservative-collapse --minify-css=true --minify-js=true --use-short-doctype --remove-tag-whitespace --remove-script-type-attributes --remove-comments --minify-css --minify-js --collapse-whitespace --collapse-inline-tag-whitespace"
   CLEAN_CSS_OPTIONS = "--skip-rebase"
 
   class MinifierStorage

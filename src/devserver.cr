@@ -21,7 +21,7 @@ module Conduit::DevServer
     require_file! "./views/router.html"
     require_file! "./js/conduit.js"
     require_file! "./js/routes.js"
-    router_html = File.read("./views/router.html")
+    router_html = Conduit.compile_views
     get("/") { router_html }
     get("/*") do |context|
       path = "." + context.request.path
