@@ -64,7 +64,12 @@ module Conduit
     ensure_in_project_root_dir!
   end
 
-  def self.check_prereqs
+  def self.deploy
+    check_s3cmd!
+    puts "todo: deploy"
+  end
+
+  def self.check_prereqs!
     if `which git` == ""
       puts "error: git must be installed to use conduit"
       puts "please install git and try again"
@@ -75,15 +80,18 @@ module Conduit
       puts "please install tar and try again"
       exit 1
     end
+  end
+
+  def self.check_s3cmd!
     if `which s3cmd` == ""
       if `which python` == ""
-        puts "error: python must be installed to use conduit"
+        puts "error: python must be installed to use conduit for deploys"
         puts "please install python and try again"
         exit 1
       end
       if `which pip` == ""
-        puts "error: python-pip must be installed to use conduit, or s3cmd must be installed manually"
-        puts "please install pip or s3cmd and try again"
+        puts "error: python-pip must be installed or s3cmd must be installed manually to use conduit for deploys"
+        puts "please install pip or manually install s3cmd and try again (you will need to re-open this terminal)"
         exit 1
       end
       puts "error: s3cmd must be installed to use conduit"
@@ -98,13 +106,15 @@ module Conduit
   end
 
   def self.init_cli
-    check_prereqs
+    check_prereqs!
     if argv_match?(["init"]) && ARGV.size == 2
       project_name = ARGV[1].underscore
       path = "./#{project_name}"
       init_project(path)
     elsif argv_match?(["start"]) && ARGV.size == 1
       start_server
+    elsif argv_match?(["deploy"]) && ARGV.size == 1
+      deploy
     else
       puts ""
       puts "conduit v#{VERSION}"
