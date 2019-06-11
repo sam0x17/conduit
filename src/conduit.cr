@@ -1,4 +1,5 @@
 require "assert"
+require "./utils"
 require "./minifiers"
 require "./compiler"
 require "./devserver"
@@ -59,6 +60,7 @@ module Conduit
     puts `git init`
     puts ""
     puts "done."
+    ensure_in_project_root_dir!
   end
 
   def self.init_cli
@@ -66,6 +68,8 @@ module Conduit
       project_name = ARGV[1].underscore
       path = "./#{project_name}"
       init_project(path)
+    elsif argv_match?(["start"]) && ARGV.size == 1
+      start_server
     else
       puts ""
       puts "conduit v#{VERSION}"
@@ -73,8 +77,8 @@ module Conduit
       puts "usage:"
       puts ""
       puts "  conduit init [name]   (creates new project, creates directory called [name])"
-      puts "  conduit dev           (runs dev server, run from root of project)"
-      puts "  conduit upgrade       (upgrades existing app, run from root of project)"
+      puts "  conduit start         (starts dev server, must run from root of project)"
+      puts "  conduit upgrade       (upgrades existing app, must run from root of project)"
       puts "  conduit update        (checks for and installs latest conduit binary)"
       puts "  conduit help          (displays this info)"
       puts ""
