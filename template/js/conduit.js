@@ -138,6 +138,7 @@ String.prototype.replaceAll = function(search, replacement) {
         route(args[0], args[1], args[2], args[3]);
       }
       virtualNavigation = false;
+      if(conduit.onNavigate) conduit.onNavigate();
     } else { // external
       window.location = url;
     }
