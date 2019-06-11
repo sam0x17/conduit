@@ -28,6 +28,14 @@ shards:
     github: jeromegn/kilt
     version: 0.4.0
 
+  msgpack:
+    github: crystal-community/msgpack-crystal
+    version: 0.14.2
+
+  parallel_worker:
+    github: aligo/parallel_worker
+    commit: 9fd802c70a6249daa94cd5d64f62251e5c233605
+
   radix:
     github: luislavena/radix
     version: 0.3.9
