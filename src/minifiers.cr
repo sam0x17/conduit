@@ -33,10 +33,10 @@ module Conduit::Minifiers
       File.write(PKG_DIR + "/packages.tar.gz", MinifierStorage.get("packages.tar.gz").gets_to_end)
       `tar -xzvf #{PKG_DIR}/packages.tar.gz -C #{PKG_DIR}`
       FileUtils.rm_rf("#{PKG_DIR}/packages.tar.gz")
-      assert File.exists?(CLEAN_CSS_PATH)
-      assert File.exists?(HTML_MINIFIER_PATH)
-      assert File.exists?(UGLIFY_PATH)
     end
+    assert File.exists?(CLEAN_CSS_PATH)
+    assert File.exists?(HTML_MINIFIER_PATH)
+    assert File.exists?(UGLIFY_PATH)
   end
 
   def self.minify_css(path)
