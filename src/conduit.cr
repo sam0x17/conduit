@@ -184,6 +184,8 @@ module Conduit
       start_server
     elsif argv_match?(["deploy"]) && ARGV.size == 1
       deploy
+    elsif (argv_match?(["upgrade"]) && ARGV.size == 1) || (argv_match?(["update"]) && ARGV.size == 1)
+      puts "this command is not yet implemented, aborting."
     else
       puts ""
       puts "conduit v#{VERSION}"
