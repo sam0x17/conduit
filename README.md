@@ -27,7 +27,7 @@ Conduit is designed for developers who:
 * forces you to use one unified set of`<head>` contents for your entire application, simplifying asset management and improving page load times
 
 ## Short-Term TODO
-- [ ] initial binary release
+- [x] initial binary release
 - [ ] installation instructions
 - [ ] usage instructions
 - [ ] `conduit update` command for updating to the latest conduit binary
