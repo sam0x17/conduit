@@ -12,7 +12,7 @@
 //   return parts.article_name.startsWith('Tutorial: ') && getCookie('some_key') == 'some_value';
 // });
 //
-// you can also provide a function for the 'target' attribute that will return the target HTML page
+// you can also provide a function for the 'view_path' attribute that will return the view_path HTML page
 // based on whatever circumstances you want to take into account (must be instantaneous, though, so
 // you can't use asynchronous AJAX here) e.g.:
 //
@@ -24,5 +24,4 @@
 // }
 // 
 // conduit.route('/', loginProtected('dashboard'));
-//
 // this will render login.html if no user is logged in, and will otherwise render dashboard.html
