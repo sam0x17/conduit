@@ -106,10 +106,6 @@ String.prototype.replaceAll = function(search, replacement) {
     }
   }
 
-  function trueViewportHeight() {
-    return Math.min(document.documentElement.clientHeight, window.screen.height, window.innerHeight);
-  }
-
   function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -161,7 +157,6 @@ String.prototype.replaceAll = function(search, replacement) {
     ajax: ajax,
     setHTML: setHTML,
     route: route,
-    trueViewportHeight: trueViewportHeight,
     setCookie: setCookie,
     getCookie: getCookie,
     clearCookies: clearCookies,
