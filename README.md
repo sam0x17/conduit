@@ -30,6 +30,7 @@ Conduit is designed for developers who:
 - [x] initial binary release
 - [ ] installation instructions
 - [ ] usage instructions
+- [ ] example app
 - [ ] `conduit update` command for updating to the latest conduit binary
 - [ ] `conduit upgrade` command, once we have additions that require retroactive changes to conduit.js or the routing system
 - [ ] compress index.html with zlib/gzip compression
