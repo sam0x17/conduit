@@ -1,10 +1,10 @@
 require "assert"
+require "file_utils"
 
 require "./utils"
 require "./minifiers"
 require "./compiler"
 require "./devserver"
-require "file_utils"
 
 module Conduit
   VERSION = "0.1.0"
@@ -64,9 +64,48 @@ module Conduit
     ensure_in_project_root_dir!
   end
 
+  def self.read_string(prompt)
+    loop do
+      puts prompt
+      val = gets
+      next if val.nil?
+      return val.not_nil!.strip if val.size > 0
+    end
+    ""
+  end
+
+  def self.yesno
+    print "[y/n]: "
+    val = gets
+    return false if val.nil?
+    return val.not_nil!.downcase == "y"
+  end
+
   def self.deploy
     check_s3cmd!
-    puts "todo: deploy"
+    pwd = `pwd`.strip
+    if File.exists?("./.s3_bucket")
+      s3_bucket = File.read("./.s3_bucket").strip
+    else
+      s3_bucket = read_string("provide the target S3 bucket name and press [ENTER]")
+      puts "note: you can save the bucket name to a file named .s3_bucket to keep from having to enter this again"
+    end
+    puts ""
+    puts "target s3 bucket or cloudfront domain: #{s3_bucket}"
+    puts "project to upload: #{pwd}"
+    puts ""
+    puts "proceed with deploy?"
+    if yesno
+      puts ""
+      puts "deploying..."
+      puts ""
+      args = ["sync", "#{pwd}/", "s3://#{s3_bucket}/", "--acl-public", "--delete-removed", "--guess-mime-type", "--no-mime-magic", "--no-preserve", "--cf-invalidate"]
+      Process.run("s3cmd", args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
+      puts ""
+      puts "done."
+    else
+      puts "aborted."
+    end
   end
 
   def self.check_prereqs!
