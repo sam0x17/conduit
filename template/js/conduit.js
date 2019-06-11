@@ -97,7 +97,7 @@ String.prototype.replaceAll = function(search, replacement) {
   // e.g.: route('/users/:id/#otherpart/', 'blog/entry', 'my page title, function(parts) { return parts.id == 23; })
   function route(format, target, title, condition) {
     //console.log(currentPath);
-    if(!skipRouteSave) savedRoutes.push([format, target, title, condition]);
+    if(!virtualNavigation) savedRoutes.push([format, target, title, condition]);
     if(routed) return;
     var matchedParts = matchFormat(format);
     if(!matchedParts) return;
@@ -111,6 +111,7 @@ String.prototype.replaceAll = function(search, replacement) {
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
       html = atob(html);
+      if(virtualNavigation) history.pushState(null, title, currentPath);
       setHTML(document.body, html);
     }
   }
@@ -131,13 +132,13 @@ String.prototype.replaceAll = function(search, replacement) {
     if(link.host == window.location.host) { // local
       currentPath = filterPath(link.pathname);
       cparts = currentPath.split('/');
-      skipRouteSave = true;
+      virtualNavigation = true;
       routed = false;
       for(var i = 0; i < savedRoutes.length; i++) {
         var args = savedRoutes[i];
         route(args[0], args[1], args[2], args[3]);
       }
-      skipRouteSave = false;
+      virtualNavigation = false;
     } else { // external
       window.location = url;
     }
@@ -202,7 +203,7 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
   document.addEventListener('click', linkClickHandler);
-  var skipRouteSave = false;
+  var virtualNavigation = false;
   var routed = false;
   var currentPath = getCurrentPath();
   var cparts = currentPath.split('/');
