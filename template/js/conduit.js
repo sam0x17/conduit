@@ -90,9 +90,11 @@ String.prototype.replaceAll = function(search, replacement) {
 
   // e.g.: route('/users/:id/#otherpart/', 'blog/entry', 'my page title, function(parts) { return parts.id == 23; })
   function route(format, target, title, condition) {
+    if(conduit.routed) return;
     var matchedParts = matchFormat(format);
     if(!matchedParts) return;
     if(!condition || condition(matchedParts, currentPath)) {
+      conduit.routed = true;
       console.log('routed to: ', target + ', title="' + title + '"');
       conduit.pathVariables = matchedParts;
       console.log('path variables: ', conduit.pathVariables);
@@ -162,6 +164,7 @@ String.prototype.replaceAll = function(search, replacement) {
     trueViewportHeight: trueViewportHeight,
     setCookie: setCookie,
     getCookie: getCookie,
-    clearCookies: clearCookies
+    clearCookies: clearCookies,
+    routed: false
   };
 })();
