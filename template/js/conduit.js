@@ -113,6 +113,14 @@ String.prototype.replaceAll = function(search, replacement) {
     }
   }
 
+  function linkClickHandler(e) {
+    var target = e.target;
+    if(target.tagName == 'A' && target.host == window.location.host) {
+      e.preventDefault();
+      return false;
+    }
+  }
+
   function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -171,6 +179,7 @@ String.prototype.replaceAll = function(search, replacement) {
     xhr.send();
   }
 
+  document.addEventListener('click', linkClickHandler);
   var currentPath = getCurrentPath();
   var cparts = currentPath.split('/');
   window.conduit = {
