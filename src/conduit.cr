@@ -1,4 +1,5 @@
 require "assert"
+require "tempdir"
 require "file_utils"
 
 require "./utils"
@@ -82,6 +83,7 @@ module Conduit
   end
 
   def self.deploy
+    ensure_in_project_root_dir!
     check_s3cmd!
     pwd = `pwd`.strip
     if File.exists?("./.s3_bucket")
