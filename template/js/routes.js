@@ -12,6 +12,17 @@
 //   return parts.article_name.startsWith('Tutorial: ') && getCookie('some_key') == 'some_value';
 // });
 //
-
-conduit.route('/test-1', 'test', 'Test 1');
-conduit.route('/test-2', 'test2', 'Test 2');
+// you can also provide a function for the 'target' attribute that will return the target HTML page
+// based on whatever circumstances you want to take into account (must be instantaneous, though, so
+// you can't use asynchronous AJAX here) e.g.:
+//
+// function loginProtected(page) {
+//   return function() {
+//     if(isLoggedIn()) return page;
+//     return 'login';
+//   }
+// }
+// 
+// conduit.route('/', loginProtected('dashboard'));
+//
+// this will render login.html if no user is logged in, and will otherwise render dashboard.html
