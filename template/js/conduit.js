@@ -119,9 +119,8 @@ String.prototype.replaceAll = function(search, replacement) {
   function linkClickHandler(e) {
     var target = e.target;
     if(target.tagName == 'A' && target.host == window.location.host && e.which == 1) {
-      e.preventDefault();
       navigate(target.href);
-      return false;
+      return e.preventDefault();
     }
     return true;
   }
@@ -203,6 +202,10 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
   document.addEventListener('click', linkClickHandler);
+  window.addEventListener('popstate', function(event) {
+    // TODO: restore actual DOM state
+    navigate(window.location);
+  });
   var virtualNavigation = false;
   var routed = false;
   var currentPath = getCurrentPath();
