@@ -15,10 +15,6 @@ dependencies:
     github: sam0x17/assert.cr
   kemal:
     github: kemalcr/kemal
-  awscr-s3:
-    github: taylorfinnell/awscr-s3
-  parallel_worker:
-    github: aligo/parallel_worker
 
 crystal: 0.29.0
 

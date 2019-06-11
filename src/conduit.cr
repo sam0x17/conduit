@@ -1,6 +1,4 @@
 require "assert"
-require "awscr-s3"
-require "parallel_worker"
 
 require "./utils"
 require "./minifiers"
