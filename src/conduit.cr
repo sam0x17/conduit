@@ -1,4 +1,6 @@
 require "assert"
+require "awscr-s3"
+
 require "./utils"
 require "./minifiers"
 require "./compiler"
