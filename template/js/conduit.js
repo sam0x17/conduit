@@ -103,6 +103,7 @@ String.prototype.replaceAll = function(search, replacement) {
       conduit.routed = true;
       console.log('routed to: ', target + ', title="' + title + '"');
       conduit.pathVariables = matchedParts;
+      conduit.currentPath = currentPath;
       console.log('path variables: ', conduit.pathVariables);
       document.head.getElementsByTagName('title')[0].innerHTML = title;
       var html = conduit.VIEWS[target];
