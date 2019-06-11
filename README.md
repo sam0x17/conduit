@@ -28,13 +28,15 @@ Conduit is designed for developers who:
 
 ## Short-Term TODO
 - [ ] initial binary release
+- [ ] installation instructions
+- [ ] usage instructions
 - [ ] `conduit update` command for updating to the latest conduit binary
 - [ ] `conduit upgrade` command, once we have additions that require retroactive changes to conduit.js or the routing system
-- [ ]  compress index.html with zlib/gzip compression
-- [ ]  ability to produce a static application bundle without deploying to S3
-- [ ]  confirm which search engines support conduit-style routing (Googlebot we know for sure)
-- [ ]  assess browser compatibility (only firefox is actively checked at the moment)
-- [ ]  macos binaries
+- [ ] compress index.html with zlib/gzip compression
+- [ ] ability to produce a static application bundle without deploying to S3
+- [ ] confirm which search engines support conduit-style routing (Googlebot we know for sure)
+- [ ] assess browser compatibility (only firefox is actively checked at the moment)
+- [ ] macos binaries
 
 ## Future Work
 * optional haml/scss/sass/slim support
