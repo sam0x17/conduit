@@ -72,6 +72,7 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
   function matchFormat(format) {
+    if(format == "/*" || format == "*") return [];
     format = filterPath(format);
     var fparts = format.split('/');
     if(fparts.length != cparts.length) return false;
