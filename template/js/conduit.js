@@ -5,6 +5,8 @@ String.prototype.replaceAll = function(search, replacement) {
   return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+function isFunction(v) { return !!(v instanceof Function); }
+
 (function() {
   function setHTML(target, html) {
     target.innerHTML = html;
@@ -108,6 +110,9 @@ String.prototype.replaceAll = function(search, replacement) {
       conduit.pathVariables = matchedParts;
       conduit.currentPath = currentPath;
       //console.log('path variables: ', conduit.pathVariables);
+      if(isFunction(target)) {
+        target = target(matchedParts, currentPath);
+      }
       if(title) document.head.getElementsByTagName('title')[0].innerHTML = title;
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
