@@ -64,7 +64,41 @@ module Conduit
     ensure_in_project_root_dir!
   end
 
+  def self.check_prereqs
+    if `which git` == ""
+      puts "error: git must be installed to use conduit"
+      puts "please install git and try again"
+      exit 1
+    end
+    if `which tar` == ""
+      puts "error: tar must be installed to use conduit"
+      puts "please install tar and try again"
+      exit 1
+    end
+    if `which s3cmd` == ""
+      if `which python` == ""
+        puts "error: python must be installed to use conduit"
+        puts "please install python and try again"
+        exit 1
+      end
+      if `which pip` == ""
+        puts "error: python-pip must be installed to use conduit, or s3cmd must be installed manually"
+        puts "please install pip or s3cmd and try again"
+        exit 1
+      end
+      puts "error: s3cmd must be installed to use conduit"
+      puts "please run 'pip install --user s3cmd' and close and re-open this terminal before continuing"
+      exit 1
+    end
+    if !File.exists?("#{ENV["HOME"]}/.s3cfg")
+      puts "error: s3cmd must be configured with usable credentials to use conduit"
+      puts "please run 's3cmd --configure' and configure your credentials before trying again"
+      exit 1
+    end
+  end
+
   def self.init_cli
+    check_prereqs
     if argv_match?(["init"]) && ARGV.size == 2
       project_name = ARGV[1].underscore
       path = "./#{project_name}"
