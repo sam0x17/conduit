@@ -96,16 +96,18 @@ String.prototype.replaceAll = function(search, replacement) {
 
   // e.g.: route('/users/:id/#otherpart/', 'blog/entry', 'my page title, function(parts) { return parts.id == 23; })
   function route(format, target, title, condition) {
-    if(conduit.routed) return;
+    //console.log(currentPath);
+    if(!skipRouteSave) savedRoutes.push([format, target, title, condition]);
+    if(routed) return;
     var matchedParts = matchFormat(format);
     if(!matchedParts) return;
     if(!condition || condition(matchedParts, currentPath)) {
-      conduit.routed = true;
-      console.log('routed to: ', target + ', title="' + title + '"');
+      routed = true;
+      //console.log('routed to: ', target + ', title="' + title + '"');
       conduit.pathVariables = matchedParts;
       conduit.currentPath = currentPath;
-      console.log('path variables: ', conduit.pathVariables);
-      document.head.getElementsByTagName('title')[0].innerHTML = title;
+      //console.log('path variables: ', conduit.pathVariables);
+      if(title) document.head.getElementsByTagName('title')[0].innerHTML = title;
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
       html = atob(html);
@@ -117,7 +119,27 @@ String.prototype.replaceAll = function(search, replacement) {
     var target = e.target;
     if(target.tagName == 'A' && target.host == window.location.host) {
       e.preventDefault();
+      navigate(target.href);
       return false;
+    }
+    return true;
+  }
+
+  function navigate(url) {
+    var link = document.createElement('a');
+    link.setAttribute('href', url);
+    if(link.host == window.location.host) { // local
+      currentPath = filterPath(link.pathname);
+      cparts = currentPath.split('/');
+      skipRouteSave = true;
+      routed = false;
+      for(var i = 0; i < savedRoutes.length; i++) {
+        var args = savedRoutes[i];
+        route(args[0], args[1], args[2], args[3]);
+      }
+      skipRouteSave = false;
+    } else { // external
+      window.location = url;
     }
   }
 
@@ -180,17 +202,20 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
   document.addEventListener('click', linkClickHandler);
+  var skipRouteSave = false;
+  var routed = false;
   var currentPath = getCurrentPath();
   var cparts = currentPath.split('/');
+  var savedRoutes = [];
   window.conduit = {
     ajax: ajax,
     setHTML: setHTML,
     setMeta: setMeta,
     setTitle: setTitle,
     route: route,
+    navigate: navigate,
     setCookie: setCookie,
     getCookie: getCookie,
-    clearCookies: clearCookies,
-    routed: false
+    clearCookies: clearCookies
   };
 })();
