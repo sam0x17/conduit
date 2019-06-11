@@ -23,6 +23,7 @@ Conduit is designed for developers who:
 * all local page loads are intercepted and serviced by the routing engine (in a way similar to turbolinks and reactjs/vuejs)
 * easy setup -- just need a Cloudfront-enabled S3 bucket with 404 handling set to always load index.html
 * no clunky Node.js/webpack ecosystem required -- all you need is the `conduit` binary
+* uses HTML 5 browser history API to rewrite URLs on the fly and ensure the back button still works
 * development server (run using `conduit start`) supports hot re-loading of project files as they are changed
 * compatible with any cloud storage service that can have all paths automatically load index.html
 * forces you to use one unified set of`<head>` contents for your entire application, simplifying asset management and improving page load times
