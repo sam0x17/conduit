@@ -37,6 +37,10 @@ String.prototype.replaceAll = function(search, replacement) {
     document.head.appendChild(tag);
   }
 
+  function setTitle(title) {
+    document.head.getElementsByTagName('title')[0].innerHTML = title;
+  }
+
   function filterPath(path) {
     if(path.endsWith('/')) path = path.substr(0, path.length - 2);
     if(path == '') path = '/';
@@ -100,7 +104,7 @@ String.prototype.replaceAll = function(search, replacement) {
       console.log('routed to: ', target + ', title="' + title + '"');
       conduit.pathVariables = matchedParts;
       console.log('path variables: ', conduit.pathVariables);
-      document.getElementsByTagName('title')[0].innerHTML = title;
+      document.head.getElementsByTagName('title')[0].innerHTML = title;
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
       html = atob(html);
@@ -172,6 +176,7 @@ String.prototype.replaceAll = function(search, replacement) {
     ajax: ajax,
     setHTML: setHTML,
     setMeta: setMeta,
+    setTitle: setTitle,
     route: route,
     setCookie: setCookie,
     getCookie: getCookie,
