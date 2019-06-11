@@ -118,7 +118,7 @@ String.prototype.replaceAll = function(search, replacement) {
 
   function linkClickHandler(e) {
     var target = e.target;
-    if(target.tagName == 'A' && target.host == window.location.host) {
+    if(target.tagName == 'A' && target.host == window.location.host && e.which == 1) {
       e.preventDefault();
       navigate(target.href);
       return false;
