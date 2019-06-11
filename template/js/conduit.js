@@ -21,18 +21,20 @@ String.prototype.replaceAll = function(search, replacement) {
       parentNode.appendChild(script);
     }
   }
-  
-  function stringifyForm(data) {
-    var formItems = [];
-    for(var prop in data) {
-      if(!form.hasOwnProperty(prop)) continue;
-      formItems.push(encodeURIComponent(prop) + '=' + encodeURIComponent(data[prop]));
+
+  function setMeta(name, content) {
+    var metas = document.head.getElementsByTagName('meta');
+    for(var i = 0; i < metas.length; i++) {
+      var tag = metas[i];
+      if(tag.getAttribute('name') == name) {
+        tag.setAttribute('content', content);
+        return;
+      }
     }
-    var url = '';
-    if(formItems.length > 0) {
-      url += '?' + formItems.join('&');
-    }
-    return url;
+    var tag = document.createElement('meta');
+    tag.setAttribute('name', name);
+    tag.setAttribute('content', content);
+    document.head.appendChild(tag);
   }
 
   function filterPath(path) {
@@ -136,6 +138,19 @@ String.prototype.replaceAll = function(search, replacement) {
     }
   }
 
+  function stringifyForm(data) {
+    var formItems = [];
+    for(var prop in data) {
+      if(!form.hasOwnProperty(prop)) continue;
+      formItems.push(encodeURIComponent(prop) + '=' + encodeURIComponent(data[prop]));
+    }
+    var url = '';
+    if(formItems.length > 0) {
+      url += '?' + formItems.join('&');
+    }
+    return url;
+  }
+
   function ajax(method, url, form, successCallback, failureCallback) {
     if(!failureCallback) failureCallback = function(response) {
       console.error('AJAX request failed: ', response);
@@ -156,6 +171,7 @@ String.prototype.replaceAll = function(search, replacement) {
   window.conduit = {
     ajax: ajax,
     setHTML: setHTML,
+    setMeta: setMeta,
     route: route,
     setCookie: setCookie,
     getCookie: getCookie,
