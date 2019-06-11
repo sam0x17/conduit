@@ -89,20 +89,48 @@ module Conduit
     if File.exists?("./.s3_bucket")
       s3_bucket = File.read("./.s3_bucket").strip
     else
-      s3_bucket = read_string("provide the target S3 bucket name and press [ENTER]")
+      s3_bucket = read_string("provide the target S3 bucket or cloudfront domain name and press [ENTER]")
       puts "note: you can save the bucket name to a file named .s3_bucket to keep from having to enter this again"
     end
     puts ""
-    puts "target s3 bucket or cloudfront domain: #{s3_bucket}"
+    puts "target s3 bucket or cloudfront domain: s3://#{s3_bucket}"
     puts "project to upload: #{pwd}"
     puts ""
     puts "proceed with deploy?"
     if yesno
       puts ""
-      puts "deploying..."
+      puts "compiling app..."
       puts ""
-      args = ["sync", "#{pwd}/", "s3://#{s3_bucket}/", "--acl-public", "--delete-removed", "--guess-mime-type", "--no-mime-magic", "--no-preserve", "--cf-invalidate"]
-      Process.run("s3cmd", args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
+      TempDir.create("conduit-deploy") do |target_path|
+        puts " > copying static assets..."
+        FileUtils.cp_r("./public", "#{target_path}/public")
+        target_path = "#{target_path}/public"
+        File.delete("#{target_path}/.keep") if File.exists?("#{target_path}/.keep")
+        puts " > minifying and copying js assets..."
+        find_files("./js") do |path|
+          minified = minify_js(path)
+          path = path[5..]
+          FileUtils.mkdir_p("#{target_path}/js/#{Path[path].parent}")
+          File.write("#{target_path}/js/#{path}", minified)
+        end
+        puts " > minifying and copying css assets..."
+        find_files("./css") do |path|
+          minified = minify_css(path)
+          path = path[6..]
+          FileUtils.mkdir_p("#{target_path}/css/#{Path[path].parent}")
+          File.write("#{target_path}/css/#{path}", minified)
+        end
+        puts " > compiling, minifying, and copying index.html..."
+        index_html = compile_views
+        File.write("#{target_path}/index.html", index_html)
+        puts ""
+        puts `tree #{target_path}`
+        puts ""
+        puts "deploying to s3://#{s3_bucket}..."
+        puts ""
+        args = ["sync", "#{target_path}/", "s3://#{s3_bucket}/", "--acl-public", "--delete-removed", "--guess-mime-type", "--no-mime-magic", "--no-preserve", "--cf-invalidate"]
+        Process.run("s3cmd", args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
+      end
       puts ""
       puts "done."
     else
