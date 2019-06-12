@@ -78,7 +78,7 @@ usage:
 - [x] installation script
 - [x] installation instructions
 - [x] usage instructions
-- [ ] macos binary release
+- [x] macos binary release
 - [ ] example app
 - [ ] `conduit update` command for updating to the latest conduit binary
 - [ ] `conduit upgrade` command, once we have additions that require retroactive changes to conduit.js or the routing system
