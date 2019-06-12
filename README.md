@@ -30,6 +30,7 @@ Conduit is designed for developers who:
 
 ## Short-Term TODO
 - [x] initial binary release
+- [ ] installation script
 - [ ] installation instructions
 - [ ] usage instructions
 - [ ] example app
