@@ -54,7 +54,8 @@ To deploy, simply run `conduit deploy` at the root of your project directory. Yo
 with the 404 handling feature on CloudFront set to always load `index.html` with a status of `200`. You will also need to install and
 configure [s3cmd](https://github.com/s3tools/s3cmd), as this is used by conduit's deployment routine.
 
-Once you are ready, simply run `conduit deploy` and conduit will deploy your app.
+Once you are ready, simply run `conduit deploy` and conduit will collect any required information and then deploy your app. This includes
+automatically running an invalidation on CloudFront so that CloudFront will reflect the newly upload S3 files immediately.
 
 ## Usage
 
