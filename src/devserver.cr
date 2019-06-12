@@ -7,8 +7,7 @@ end
 module Conduit
   def self.start_server
     ensure_in_project_root_dir!
-    router_html = compile_views(true)
-    get("/") { router_html }
+    get("/") { compile_views(true) }
     get("/*") do |context|
       path = "." + context.request.path
       if File.exists?(path)
@@ -16,7 +15,7 @@ module Conduit
       #elsif Path[path.to_s].extension.size > 0
       #  halt context, status_code: 404, response: "Not Found"
       else
-        router_html
+        compile_views(true)
       end
     end
     Kemal.run
