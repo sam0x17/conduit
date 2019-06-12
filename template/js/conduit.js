@@ -119,6 +119,7 @@ function isFunction(v) { return !!(v instanceof Function); }
       html = atob(html);
       if(virtualNavigation) history.pushState(null, title, currentPath);
       setHTML(document.body, html);
+      if(conduit.onNavigate) conduit.onNavigate();
     }
   }
 
@@ -144,7 +145,6 @@ function isFunction(v) { return !!(v instanceof Function); }
         route(args[0], args[1], args[2], args[3]);
       }
       virtualNavigation = false;
-      if(conduit.onNavigate) conduit.onNavigate();
     } else { // external
       window.location = url;
     }
