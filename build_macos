@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "building..."
+crystal build src/conduit.cr --release --no-debug || exit 1
+mv conduit bin/
+echo "done."
