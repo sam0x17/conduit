@@ -1,4 +1,4 @@
-# Conduit
+![conduit](https://raw.githubusercontent.com/sam0x17/conduit/master/logo-300.png)
 
 A batteries-included frontend (vanilla) javascript framework with client-side routing for
 creating cloud storage hosted, static bundles that interact with an external API server.
