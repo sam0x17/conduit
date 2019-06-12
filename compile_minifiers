@@ -1,7 +1,14 @@
 #!/bin/bash
+CONDUIT_OS="unknown"
+if [[ $OSTYPE == "linux-gnu" ]]; then
+  CONDUIT_OS="linux"
+elif [[ $OSTYPE == "darwin"* ]]; then
+  CONDUIT_OS="macos"
+fi
+echo "platform: $CONDUIT_OS"
 ORIG=`pwd` || exit 1
-rm linux-packages.tar.gz -f
-rm macos-packages.tar.gz -f
+rm -f linux-packages.tar.gz
+rm -f macos-packages.tar.gz
 echo "checking prerequisites..."
 git --version || exit 1
 node --version || exit 1
@@ -23,7 +30,7 @@ mv uglify-js $ORIG/bin/uglify-js-linux || exit 1
 pkg -t node10-macos . || exit 1
 mv uglify-js $ORIG/bin/uglify-js-macos || exit 1
 cd .. || exit 1
-rm uglify-js -rf || exit 1
+rm -rf uglify-js || exit 1
 echo ""
 echo "generating binaries for clean-css-cli..."
 git clone git@github.com:jakubpawlowicz/clean-css-cli.git || exit 1
@@ -35,7 +42,7 @@ mv clean-css-cli $ORIG/bin/clean-css-linux || exit 1
 pkg -t node10-macos . || exit 1
 mv clean-css-cli $ORIG/bin/clean-css-macos || exit 1
 cd .. || exit 1
-rm clean-css-cli -rf || exit 1
+rm -rf clean-css-cli || exit 1
 echo ""
 echo "generating binaries for html-minifier..."
 git clone git@github.com:kangax/html-minifier.git || exit 1
@@ -47,29 +54,29 @@ mv html-minifier $ORIG/bin/html-minifier-linux || exit 1
 pkg -t node10-macos . || exit 1
 mv html-minifier $ORIG/bin/html-minifier-macos || exit 1
 cd .. || exit 1
-rm html-minifier -rf || exit 1
+rm -rf html-minifier || exit 1
 cd $ORIG || exit 1
 cd bin || exit 1
 echo ""
-echo "verifying that linux packages work..."
-./clean-css-linux --version || exit 1
-./html-minifier-linux --version || exit 1
-./uglify-js-linux --version || exit 1
+echo "verifying that packages work..."
+./clean-css-$CONDUIT_OS --version || exit 1
+./html-minifier-$CONDUIT_OS --version || exit 1
+./uglify-js-$CONDUIT_OS --version || exit 1
 echo ""
 echo "compressing platform-specific binaries..."
 mkdir -p linux-packages || exit 1
 mkdir -p macos-packages || exit 1
-rm linux-packages/* -rf || exit 1
-rm macos-packages/* -rf || exit 1
+rm -rf linux-packages/* || exit 1
+rm -rf macos-packages/* || exit 1
 mv *-linux linux-packages/ || exit 1
 mv *-macos macos-packages/ || exit 1
-rm *.tar.gz
+rm -f *.tar.gz
 tar -zcvf linux-packages.tar.gz linux-packages || exit 1
 tar -zcvf macos-packages.tar.gz macos-packages || exit 1
 echo ""
 ls -lh linux-packages.tar.gz 
 ls -lh macos-packages.tar.gz
-rm linux-packages macos-packages -rf || exit 1
+rm -rf linux-packages macos-packages || exit 1
 mkdir -p linux-packages || exit 1
 mkdir -p macos-packages || exit 1
 mv linux-packages.tar.gz linux-packages/packages.tar.gz || exit 1
