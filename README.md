@@ -5,15 +5,15 @@ Conduit is designed to be the ultimate frontend framework for serverless web app
 (Single Page Apps).
 
 ## Intended Audience
-Conduit is designed for developers who:
-* want a no-nonsense frontend framework that is fast, short, simple, and that isn't reactjs/vuejs/etc
-* don't want to have to use newer javascript dialects or an entire Node.js ecosystem just to write browser javascript
-* want SPAs that can be hosted in cloud storage but can still be indexed by search engines
-* want instant page loads
-* like the idea of sane, opinionated defaults, and convention over configuration
-* believe in the value of pre-compiled views/templates
-* are _so done_ with server side rendering, wrangling web servers and 20 minute docker deploys
-* need a scalable frontend for their serverless web app / API
+Conduit is designed for developers:
+* who want a no-nonsense frontend framework that is fast, short, simple, and isn't reactjs/vuejs/etc
+* that don't want to have to use newer javascript dialects or an entire Node.js ecosystem just to write browser javascript
+* that want SPAs that can be hosted in cloud storage but can still be indexed by search engines
+* that want instant page loads
+* who like the idea of sane, opinionated defaults, and convention over configuration
+* who believe in the value of pre-compiled views/templates
+* that are _so done_ with server side rendering, wrangling web servers and 20 minute docker deploys
+* that need a scalable frontend for their serverless web app / API
 
 ## Features
 * cross-platform `conduit` binary that comes with all the functionality you need to create, test, and deploy your app
@@ -27,6 +27,18 @@ Conduit is designed for developers who:
 * development server (run using `conduit start`) supports hot re-loading of project files as they are changed
 * compatible with any cloud storage service that can have all paths automatically load index.html
 * forces you to use one unified set of`<head>` contents for your entire application, simplifying asset management and improving page load times
+
+## Installation
+Pre-compiled static binaries are provided for linux and macos. You can use our install script, as shown below,
+to install conduit with a single command, to your home directory without requiring root access. You can also
+browse the releases page and manually download a binary and it to your system PATH.
+
+Run this in a terminal:
+```
+curl -o- https://raw.githubusercontent.com/sam0x17/conduit/master/install.sh | bash
+```
+Then just log out and log back in, and `conduit` should be available as a command from all your terminals.
+To upgrade just follow the same steps as above and the old version will be overwritten by the new version.
 
 ## Short-Term TODO
 - [x] initial binary release
