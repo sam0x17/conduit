@@ -15,8 +15,10 @@ function isFunction(v) { return !!(v instanceof Function); }
       var script = scripts[i];
       var src = script.src;
       eval(script.innerHTML);
-      script.src = '';
-      script.src = src;
+      if(src) {
+        script.src = '';
+        script.src = src;
+      }
     }
   }
 
