@@ -11,7 +11,7 @@ function isFunction(v) { return !!(v instanceof Function); }
   function setHTML(target, html) {
     target.innerHTML = html;
     var scripts = target.getElementsByTagName('script');
-    for(var i = 0; i < scripts.length; ++i) {
+    for(var i = 0; i < scripts.length; i++) {
       var script = scripts[i];
       var src = script.src;
       eval(script.innerHTML);
