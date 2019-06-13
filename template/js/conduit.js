@@ -14,13 +14,9 @@ function isFunction(v) { return !!(v instanceof Function); }
     for(var i = 0; i < scripts.length; ++i) {
       var script = scripts[i];
       var src = script.src;
-      var innerHTML = script.innerHTML;
-      var parentNode = script.parentNode;
-      parentNode.removeChild(script);
-      script = document.createElement('script');
-      if(src != '') script.src = src;
-      script.innerHTML = innerHTML;
-      parentNode.appendChild(script);
+      eval(script.innerHTML);
+      script.src = '';
+      script.src = src;
     }
   }
 
