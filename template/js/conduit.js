@@ -16,8 +16,10 @@ function isFunction(v) { return !!(v instanceof Function); }
       var src = script.src;
       eval(script.innerHTML);
       if(src) {
-        script.src = '';
-        script.src = src;
+        var head = document.getElementsByTagName('head')[0];
+        var scriptclone = document.createElement('script');
+        scriptclone.src= src;
+        head.appendChild(scriptclone);
       }
     }
   }
