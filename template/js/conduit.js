@@ -87,7 +87,7 @@ function isFunction(v) { return !!(v instanceof Function); }
         var label = fpart.substr(1, fpart.length - 1);
         matchedParts[label] = parseInt(cpart);
         continue;
-      } else if(fpart.startsWith('#') && isAlphaName(cpart)) {
+      } else if(fpart.startsWith('#')) {
         var label = fpart.substr(1, fpart.length - 1);
         matchedParts[label] = cpart;
         continue;
