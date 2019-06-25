@@ -113,7 +113,8 @@ function isFunction(v) { return !!(v instanceof Function); }
       if(isFunction(target)) {
         target = target(matchedParts, currentPath);
       }
-      if(title) document.head.getElementsByTagName('title')[0].innerHTML = title;
+      if(!title) title = defaultTitle;
+      setTitle(title);
       var html = conduit.VIEWS[target];
       if(!html) throw 'could not find pre-compiled template for "' + target + '"';
       html = atob(html);
@@ -218,6 +219,7 @@ function isFunction(v) { return !!(v instanceof Function); }
   var currentPath = getCurrentPath();
   var cparts = currentPath.split('/');
   var savedRoutes = [];
+  var defaultTitle = 'Conduit';
   window.conduit = {
     ajax: ajax,
     setHTML: setHTML,
