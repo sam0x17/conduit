@@ -209,6 +209,10 @@ function isFunction(v) { return !!(v instanceof Function); }
     xhr.send();
   }
 
+  function setDefaultTitle(title) {
+    defaultTitle = title;
+  }
+
   document.addEventListener('click', linkClickHandler);
   window.addEventListener('popstate', function(event) {
     // TODO: restore actual DOM state
@@ -229,6 +233,7 @@ function isFunction(v) { return !!(v instanceof Function); }
     navigate: navigate,
     setCookie: setCookie,
     getCookie: getCookie,
-    clearCookies: clearCookies
+    clearCookies: clearCookies,
+    setDefaultTitle: setDefaultTitle
   };
 })();
