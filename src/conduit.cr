@@ -41,6 +41,16 @@ module Conduit
     raise "file was not created" unless File.exists?(path)
   end
 
+  def self.upgrade(project_path)
+    puts ""
+    puts "upgrading project in '#{project_path}'"
+    puts ""
+    ensure_in_project_root_dir!
+    write_template_file("js/conduit.js", project_path)
+    puts ""
+    puts "project upgrade complete!"
+  end
+
   def self.init_project(project_path)
     puts ""
     puts "initializing project in '#{project_path}'"
@@ -184,7 +194,9 @@ module Conduit
       start_server
     elsif argv_match?(["deploy"]) && ARGV.size == 1
       deploy
-    elsif (argv_match?(["upgrade"]) && ARGV.size == 1) || (argv_match?(["update"]) && ARGV.size == 1)
+    elsif argv_match?(["upgrade"]) && ARGV.size == 1
+      upgrade(`pwd`.strip)
+    elsif argv_match?(["update"]) && ARGV.size == 1
       puts "this command is not yet implemented, aborting."
     else
       puts ""
