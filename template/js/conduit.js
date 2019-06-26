@@ -124,6 +124,10 @@ function isFunction(v) { return !!(v instanceof Function); }
     }
   }
 
+  function redirect(srcPath, destPath) {
+    if(currentPath == srcPath) navigate(destPath);
+  }
+
   function linkClickHandler(e) {
     var target = e.target;
     if(target.tagName == 'A' && target.host == window.location.host && e.which == 1) {
@@ -234,6 +238,7 @@ function isFunction(v) { return !!(v instanceof Function); }
     setCookie: setCookie,
     getCookie: getCookie,
     clearCookies: clearCookies,
-    setDefaultTitle: setDefaultTitle
+    setDefaultTitle: setDefaultTitle,
+    redirect: redirect
   };
 })();
