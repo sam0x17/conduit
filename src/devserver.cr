@@ -4,6 +4,15 @@ def Kemal.display_startup_message(config, server)
   log "[#{config.env}] Conduit Development Server is live at http://localhost:3000"
 end
 
+private def Kemal.setup_trap_signal
+  Signal::INT.trap do
+    log ""
+    log "Conduit Development Server is shutting down..."
+    Kemal.stop
+    exit
+  end
+end
+
 module Conduit
   def self.start_server
     ensure_in_project_root_dir!
