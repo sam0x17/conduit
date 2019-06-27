@@ -71,9 +71,9 @@ mv ./conduit ~/.conduit/conduit || exit 1
 echo ""
 
 if [[ "$CONDUIT_PLATFORM" == "macos" ]]; then
-  echo "installing openssl via homebrew..."
+  echo "installing homebrew dependencies..."
   brew update && brew upgrade || exit 1
-  brew install openssl || exit 1
+  brew install openssl libevent || exit 1
   echo ""
 fi
 
