@@ -33,6 +33,14 @@ if [[ `which tar` == "" ]]; then
 else
   echo " > tar: `which tar`"
 fi
+if [[ "$CONDUIT_PLATFORM" == "macos" ]]; then
+  if [[ `which brew` == "" ]]; then
+    echo "you must install homebrew before running this script. aborting."
+    exit 1
+  else
+    echo " > brew: `which brew`"
+  fi
+fi
 DOWNLOAD_MODE="curl"
 if [[ `which curl` == "" ]]; then
   DOWNLOAD_MODE="wget"
@@ -61,6 +69,14 @@ echo "installing binary to ~/.conduit"
 mkdir -p ~/.conduit || exit 1
 mv ./conduit ~/.conduit/conduit || exit 1
 echo ""
+
+if [[ "$CONDUIT_PLATFORM" == "macos" ]]; then
+  echo "installing openssl via homebrew..."
+  brew update && brew upgrade || exit 1
+  brew install openssl || exit 1
+  echo ""
+fi
+
 if [[ `which conduit` == "" ]]; then
   echo "adding ~/.conduit to PATH"
   echo 'export PATH=$PATH:~/.conduit' >> ~/.bashrc
