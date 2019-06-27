@@ -64,6 +64,7 @@ echo ""
 if [[ `which conduit` == "" ]]; then
   echo "adding ~/.conduit to PATH"
   echo 'export PATH=$PATH:~/.conduit' >> ~/.bashrc
+  echo 'export PATH=$PATH:~/.conduit' >> ~/.zshrc
   echo "conduit has been added to your PATH, you should log out and log back in."
 fi
 echo "done."
