@@ -142,6 +142,11 @@ module Conduit
         Process.run("s3cmd", args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
       end
       puts ""
+      if File.exists?("./.deploy_action")
+        puts "running deploy action..."
+        puts `./.deploy_action`
+        puts ""
+      end
       puts "done."
     else
       puts "aborted."
