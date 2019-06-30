@@ -40,11 +40,14 @@ module Conduit
     end
     views_str = "{\n"
     views.each do |name, contents|
+      contents = contents.gsub("{{version}}", version)
+      contents = contents.gsub("{{!current_year}}", Time.now.year.to_s)
       contents = Base64.strict_encode(contents)
       views_str += "\"#{name}\":\"#{contents}\",\n"
     end
     views_str = views_str[..(views_str.size - 3)] + "\n}"
     router_html = router_html.gsub("{{version}}", version)
+    router_html = router_html.gsub("{{!current_year}}", Time.now.year.to_s)
     router_html.gsub("'{{views}}'", views_str)
   end
 
