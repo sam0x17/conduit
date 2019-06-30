@@ -11,8 +11,11 @@ end
 
 module Conduit
   def self.filter_macros(src, version)
-    src = src.gsub("{{!current_year}}", Time.now.year.to_s)
-    src = src.gsub("{{version}}", version.to_s)
+    macros_hash = {
+      "{{!current_year}}" => Time.now.year.to_s,
+      "{{version}}" => version.to_s
+    }
+    src.gsub(macros_hash)
   end
 
   def self.compile_views(test_mode=false)
@@ -43,6 +46,7 @@ module Conduit
     views.each do |name, contents|
       views[name] = contents.gsub(view_replace_hash)
     end
+    router_html = router_html.gsub(view_replace_hash)
     views_str = "{\n"
     views.each do |name, contents|
       contents = filter_macros(contents, version)
