@@ -89,6 +89,12 @@ function isFunction(v) { return !!(v instanceof Function); }
     document.head.appendChild(tag);
   }
 
+  function triggerOnload() {
+    var evt = document.createEvent('Event');  
+    evt.initEvent('load', false, false);  
+    window.dispatchEvent(evt);
+  }
+
   function setTitle(title) {
     document.head.getElementsByTagName('title')[0].innerHTML = title;
   }
@@ -170,6 +176,7 @@ function isFunction(v) { return !!(v instanceof Function); }
       html = Base64.decode(html);
       if(virtualNavigation) history.pushState(null, title, currentPath);
       setHTML(document.body, html);
+      triggerOnload();
       if(conduit.onNavigate) conduit.onNavigate();
     }
   }
