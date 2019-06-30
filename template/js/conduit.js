@@ -156,6 +156,7 @@ function isFunction(v) { return !!(v instanceof Function); }
   // e.g.: route('/users/:id/#otherpart/', 'blog/entry', 'my page title, function(parts) { return parts.id == 23; })
   function route(format, target, title, condition) {
     //console.log(currentPath);
+    if(redirecting) return;
     if(!virtualNavigation) savedRoutes.push([format, target, title, condition]);
     if(routed) return;
     var matchedParts = matchFormat(format);
@@ -183,7 +184,10 @@ function isFunction(v) { return !!(v instanceof Function); }
   }
 
   function redirect(srcPath, destPath) {
-    if(currentPath == srcPath) navigate(destPath);
+    if(currentPath == srcPath) {
+      redirecting = true;
+      navigate(destPath);
+    }
   }
 
   function linkClickHandler(e) {
@@ -282,6 +286,7 @@ function isFunction(v) { return !!(v instanceof Function); }
   });
   var virtualNavigation = false;
   var routed = false;
+  var redirecting = false;
   var currentPath = getCurrentPath();
   var cparts = currentPath.split('/');
   var savedRoutes = [];
