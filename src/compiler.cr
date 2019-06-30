@@ -10,6 +10,11 @@ class String
 end
 
 module Conduit
+  def self.filter_macros(src, version)
+    src = src.gsub("{{!current_year}}", Time.now.year.to_s)
+    src = src.gsub("{{version}}", version.to_s)
+  end
+
   def self.compile_views(test_mode=false)
     version = Random.new.next_int.abs.to_s
     require_directory! "./views"
@@ -40,14 +45,12 @@ module Conduit
     end
     views_str = "{\n"
     views.each do |name, contents|
-      contents = contents.gsub("{{version}}", version)
-      contents = contents.gsub("{{!current_year}}", Time.now.year.to_s)
+      contents = filter_macros(contents, version)
       contents = Base64.strict_encode(contents)
       views_str += "\"#{name}\":\"#{contents}\",\n"
     end
     views_str = views_str[..(views_str.size - 3)] + "\n}"
-    router_html = router_html.gsub("{{version}}", version)
-    router_html = router_html.gsub("{{!current_year}}", Time.now.year.to_s)
+    router_html = filter_macros(router_html, version)
     router_html.gsub("'{{views}}'", views_str)
   end
 
