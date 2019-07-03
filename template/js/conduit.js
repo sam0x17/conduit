@@ -485,22 +485,21 @@ function isFunction(v) { return !!(v instanceof Function); }
   var defaultTitle = 'Conduit';
   var baseApiUrl = 'https://api.example.com/';
   var models = [];
-  window.conduit = {
-    ajax: ajax,
-    setHTML: setHTML,
-    setMeta: setMeta,
-    setTitle: setTitle,
-    route: route,
-    navigate: navigate,
-    setCookie: setCookie,
-    getCookie: getCookie,
-    clearCookies: clearCookies,
-    setDefaultTitle: setDefaultTitle,
-    setBaseApiUrl: setBaseApiUrl,
-    models: models,
-    model: model,
-    hashSet: hashSet,
-    redirect: redirect,
-    decode: Base64.decode
-  };
+  window.conduit = {};
+  rop(window.conduit, 'ajax', ajax);
+  rop(window.conduit, 'setHTML', setHTML);
+  rop(window.conduit, 'setMeta', setMeta);
+  rop(window.conduit, 'setTitle', setTitle);
+  rop(window.conduit, 'setDefaultTitle', setDefaultTitle);
+  rop(window.conduit, 'route', route);
+  rop(window.conduit, 'navigate', navigate);
+  rop(window.conduit, 'setCookie', setCookie);
+  rop(window.conduit, 'getCookie', getCookie);
+  rop(window.conduit, 'clearCookies', clearCookies);
+  rop(window.conduit, 'setBaseApiUrl', setBaseApiUrl);
+  rop(window.conduit, 'models', models);
+  rop(window.conduit, 'model', model);
+  rop(window.conduit, 'hashSet', hashSet);
+  rop(window.conduit, 'redirect', redirect);
+  rop(window.conduit, 'decode', Base64.decode);
 })();
