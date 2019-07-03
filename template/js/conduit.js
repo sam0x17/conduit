@@ -6,10 +6,7 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 Object.prototype.forEachProp = function(callback) {
-  for(var prop in this) {
-    if(!this.hasOwnProperty(prop)) continue;
-    callback(prop, this[prop]);
-  }
+  Object.keys(this).forEach(function() { callback(prop, this[prop]); });
 };
 
 function isFunction(v) { return !!(v instanceof Function); }
