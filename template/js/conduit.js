@@ -314,11 +314,9 @@ function isFunction(v) { return !!(v instanceof Function); }
     if(!attributes.id) attributes.id = {
       type: 'int',
       unique: true,
-      allowNull: false,
       readOnly: true
     };
     if(!attributes.id.unique) throw 'id attribute must be unique!';
-    if(attributes.id.allowNull) throw 'id attribute must not allow null values!';
     if(attributes.id.type != 'int' && attributes.id.type != 'string') throw 'id attribute must be a string or int!';
     if(attributes.id.default !== undefined) throw 'id attribute should not have a default value!';
     var attrs = Object.keys(attributes);
@@ -341,16 +339,36 @@ function isFunction(v) { return !!(v instanceof Function); }
       if(!model.filters[attribute]) return value;
       return model.filters[attribute](value);
     });
+    var enableDirtyTracking = true;
+    function withoutDirty(callback) { enableDirtyTracking = false; callback(); enableDirtyTracking = true; };
+    var overrideReadOnly = false;
+    function withoutReadOnly(callback) { overrideReadOnly = true; callback(); overrideReadOnly = false; };
+    rop(model, 'load', function(id, callback) {
+      var obj = model.new();
+      withoutDirty(function() { withoutReadOnly(function() { obj.id = id; }); });
+      if(model.bindings.type == 'ajax/json') {
+        var binding = model.bindings.loadEndpoint;
+        ajax(binding.method, binding.url, obj.attributes(), function(status, response) {
+          response ? response = JSON.parse(response) : {};
+          if(status == 200) {
+            withoutDirty(function() { withoutReadOnly(function() { response.forEachProp(function(attribute, value) { obj[attribute] = value; }); }); });
+            if(callback) callback(obj, status, response);
+            trigger('afterLoad', obj);
+          } else {
+            if(callback) callback(false, status, response);
+            trigger('onLoadFail', 'ajax', status, response);
+          }
+        });
+      } else throw 'unsupported model bindings type';
+      return obj;
+    });
     rop(model, 'new', function() {
       var obj = {};
       var dirty = hashSet([]);
-      var isNew = true;
-      var enableDirtyTracking = true;
-      function withoutDirty(callback) { enableDirtyTracking = false; callback(); enableDirtyTracking = true; };
       function markDirty(attribute) { if(enableDirtyTracking) dirty.add(attribute); };
       function trigger(triggerName, p1, p2, p3, p4) { if(trigger = model.triggers[triggerName]) trigger.call(obj, p1, p2, p3, p4); };
       rop(obj, 'model', model);
-      rop(obj, 'isNew', function() { return isNew; });
+      rop(obj, 'isNew', function() { return this.id == null; });
       rop(obj, 'attributes', function() {
         var form = {};
         this.forEachProp(function (attribute, value) {
@@ -378,11 +396,11 @@ function isFunction(v) { return !!(v instanceof Function); }
               if(foundFailure) return;
               if(validity) {
                 if(num == totalValidations) {
-                  callback(true);
+                  if(callback) callback(true);
                   trigger('afterValidate', true);
                 } else if(num > totalValidations) throw 'invalid state';
               } else {
-                callback(validity, attribute, reason);
+                if(callback) callback(validity, attribute, reason);
                 trigger('afterValidate', validity, attribute, reason);
                 foundFailure = true;
               }
@@ -397,7 +415,7 @@ function isFunction(v) { return !!(v instanceof Function); }
           if(!valid) {
             trigger('onCreateFail', 'invalid', invalidAttribute, invalidReason);
             trigger('onSaveFail', 'invalid', invalidAttribute, invalidReason);
-            callback(false);
+            if(callback) callback(false);
             return;
           }
           if(model.bindings.type == 'ajax/json') {
@@ -407,9 +425,8 @@ function isFunction(v) { return !!(v instanceof Function); }
               if(status == 200) {
                 withoutDirty(function() { response.forEachProp(function(attribute, value) { obj[attribute] = value; }); });
                 dirty.clear();
-                isNew = false;
               }
-              callback(status == 200, status, response);
+              if(callback) callback(status == 200, status, response);
               if(status == 200) {
                 trigger('afterCreate');
                 trigger('afterSave');
@@ -422,14 +439,14 @@ function isFunction(v) { return !!(v instanceof Function); }
         });
       }
       function update(callback) {
-        if(isNew) throw 'update should only be called when isNew is false';
+        if(obj.isNew()) throw 'update should only be called when isNew is false';
         trigger('beforeUpdate');
         trigger('beforeSave');
         obj.validate(function(valid, invalidAttribute, invalidReason) {
           if(!valid) {
             trigger('onUpdateFail', 'invalid', invalidAttribute, invalidReason);
             trigger('onSaveFail', 'invalid', invalidAttribute, invalidReason);
-            callback(false);
+            if(callback) callback(false);
             return;
           }
           if(model.bindings.type == 'ajax/json') {
@@ -439,9 +456,8 @@ function isFunction(v) { return !!(v instanceof Function); }
               if(status == 200) {
                 withoutDirty(function() { response.forEachProp(function(attribute, value) { obj[attribute] = value; }); });
                 dirty.clear();
-                isNew = false;
               }
-              callback(status == 200, status, response);
+              if(callback) callback(status == 200, status, response);
               if(status == 200) {
                 trigger('afterUpdate');
                 trigger('afterSave');
@@ -454,7 +470,7 @@ function isFunction(v) { return !!(v instanceof Function); }
         });
       }
       rop(obj, 'save', function(callback) {
-        if(isNew) create(callback);
+        if(obj.isNew()) create(callback);
         else update(callback);
       });
       model.attributes.forEachProp(function(attribute) {
@@ -465,11 +481,13 @@ function isFunction(v) { return !!(v instanceof Function); }
           get: function() { return attributeValue; },
           set: function(v) {
             if(attributeValue === v) return;
+            if(model.attributes[attribute].readOnly && !overrideReadOnly) throw 'cannot set ' + attribute + ' because it is read-only!';
+            attributeValue = v;
             markDirty(attribute);
             trigger(attribute + 'Changed');
-            attributeValue = v;
           }
         });
+        if(attribute == 'id') withoutDirty(function() { withoutReadOnly(function() { if(obj.id === undefined) obj.id = null; }) });
       });
     });
   }
