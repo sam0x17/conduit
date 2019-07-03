@@ -311,9 +311,20 @@ function isFunction(v) { return !!(v instanceof Function); }
 
   function model(name, attributes, validations, filters, triggers, bindings) {
     if(!attributes) attributes = {};
+    if(!attributes.id) attributes.id = {
+      type: 'int',
+      unique: true,
+      allowNull: false,
+      readOnly: true
+    };
+    if(!attributes.id.unique) throw 'id attribute must be unique!';
+    if(attributes.id.allowNull) throw 'id attribute must not allow null values!';
+    if(attributes.id.type != 'int' && attributes.id.type != 'string') throw 'id attribute must be a string or int!';
+    if(attributes.id.default !== undefined) throw 'id attribute should not have a default value!';
     var attrs = Object.keys(attributes);
-    for(var i = 0; i < attrs.length; i++)
+    for(var i = 0; i < attrs.length; i++) {
       if(RESERVED.contains(attrs[i])) throw attrs[i] + ' is an illegal attribute name';
+    }
     if(!validations) validations = {};
     if(!filters) filters = {};
     if(!triggers) triggers = {};
