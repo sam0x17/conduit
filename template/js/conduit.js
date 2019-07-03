@@ -5,6 +5,13 @@ String.prototype.replaceAll = function(search, replacement) {
   return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+Object.prototype.forEachProp = function(callback) {
+  for(var prop in this) {
+    if(!this.hasOwnProperty(prop)) continue;
+    callback(prop, this[prop]);
+  }
+};
+
 function isFunction(v) { return !!(v instanceof Function); }
 
 (function() {
@@ -249,10 +256,9 @@ function isFunction(v) { return !!(v instanceof Function); }
 
   function stringifyForm(data) {
     var formItems = [];
-    for(var prop in data) {
-      if(!form.hasOwnProperty(prop)) continue;
-      formItems.push(encodeURIComponent(prop) + '=' + encodeURIComponent(data[prop]));
-    }
+    data.forEachProp(function(name, value) {
+      formItems.push(encodeURIComponent(name) + '=' + encodeURIComponent(value));
+    });
     var url = '';
     if(formItems.length > 0) {
       url += '?' + formItems.join('&');
@@ -260,16 +266,12 @@ function isFunction(v) { return !!(v instanceof Function); }
     return url;
   }
 
-  function ajax(method, url, form, successCallback, failureCallback) {
-    if(!failureCallback) failureCallback = function(response) {
-      console.error('AJAX request failed: ', response);
-    };
+  function ajax(method, url, form, callback) {
     var xhr = new XMLHttpRequest();
     url += stringifyForm(form);
     xhr.onreadystatechange = function() {
       if(this.readyState != 4) return;
-      if(this.status == 200) successCallback(this.responseText);
-      else failureCallback(this);
+      callback(this.status, this.responseText);
     };
     xhr.open(method, url, true);
     xhr.send();
@@ -277,6 +279,196 @@ function isFunction(v) { return !!(v instanceof Function); }
 
   function setDefaultTitle(title) {
     defaultTitle = title;
+  }
+
+  function defaultAjaxBindings(modelName) {
+    var modelBaseUrl = baseApiUrl + modelName + '/';
+    var obj = { type: 'ajax/json' };
+    ACTIONS.forEach(function(action) {
+      obj[action + 'Endpoint'] = { method: 'POST', url: modelBaseUrl + action };
+    });
+    return obj;
+  }
+
+  function hashSet(keys) {
+    var obj = {};
+    keys.forEach(function(key) { obj[key] = true; });
+    rop(obj, 'contains', function(key) { return !!(this[key]); });
+    rop(obj, 'remove', function(key) { delete this[key]; });
+    rop(obj, 'add', function(key) { this[key] = true; });
+    rop(obj, 'clear', function() { this.forEachProp(function(attr) { this.remove(attr); }); });
+    return obj;
+  }
+
+  var ACTIONS = ['create', 'update', 'delete', 'load', 'enumerate'];
+  var RESERVED = hashSet(['model', 'new', 'save', 'validate', 'isNew', 'attributes']);
+
+  // readOnlyProp
+  function rop(targetObject, propName, propValue) {
+    Object.defineProperty(targetObject, propName, {
+      value: propValue,
+      enumerable: false,
+      writable: false
+    });
+  }
+
+  function model(name, attributes, validations, filters, triggers, bindings) {
+    if(!attributes) attributes = {};
+    var attrs = Object.keys(attributes);
+    for(var i = 0; i < attrs.length; i++)
+      if(RESERVED.contains(attrs[i])) throw attrs[i] + ' is an illegal attribute name';
+    if(!validations) validations = {};
+    if(!filters) filters = {};
+    if(!triggers) triggers = {};
+    if(!bindings) bindings = defaultAjaxBindings(name);
+    var model = {};
+    rop(model, 'name', name);
+    rop(model, 'attributes', attributes);
+    rop(model, 'validations', validations);
+    rop(model, 'filters', filters);
+    rop(model, 'triggers', triggers);
+    rop(model, 'bindings', bindings);
+    rop(model, 'filter', function(attribute, value) {
+      if(value === undefined) value = null;
+      if(!model.filters[attribute]) return value;
+      return model.filters[attribute](value);
+    });
+    rop(model, 'new', function() {
+      var obj = {};
+      var dirty = hashSet([]);
+      var isNew = true;
+      var enableDirtyTracking = true;
+      function withoutDirty(callback) { enableDirtyTracking = false; callback(); enableDirtyTracking = true; };
+      function markDirty(attribute) { if(enableDirtyTracking) dirty.add(attribute); };
+      function trigger(triggerName, p1, p2, p3, p4) { if(trigger = model.triggers[triggerName]) trigger.call(obj, p1, p2, p3, p4); };
+      rop(obj, 'model', model);
+      rop(obj, 'isNew', function() { return isNew; });
+      rop(obj, 'attributes', function() {
+        var form = {};
+        this.forEachProp(function (attribute, value) {
+          form[attribute] = value;
+        });
+        return form;
+      });
+      rop(obj, 'validate', function(callback) {
+        trigger('beforeValidate');
+        var foundFailure = false;
+        var totalValidations = 0;
+        model.validations.forEachProp(function(_attribute, valids) {
+          if(!Array.isArray(valids)) totalValidations += 1;
+          else totalValidations += valids.length;
+        });
+        var num = 0;
+        model.validations.forEachProp(function(attribute, valids) {
+          if(foundFailure) return;
+          var value = obj[attribute];
+          if(!Array.isArray(valids)) valids = [valids];
+          valids.forEach(function(validation) {
+            if(foundFailure) return;
+            validation.call(obj, value, function(validity, reason) {
+              num += 1;
+              if(foundFailure) return;
+              if(validity) {
+                if(num == totalValidations) {
+                  callback(true);
+                  trigger('afterValidate', true);
+                } else if(num > totalValidations) throw 'invalid state';
+              } else {
+                callback(validity, attribute, reason);
+                trigger('afterValidate', validity, attribute, reason);
+                foundFailure = true;
+              }
+            });
+          });
+        });
+      });
+      function create(callback) {
+        trigger('beforeCreate');
+        trigger('beforeSave');
+        obj.validate(function(valid, invalidAttribute, invalidReason) {
+          if(!valid) {
+            trigger('onCreateFail', 'invalid', invalidAttribute, invalidReason);
+            trigger('onSaveFail', 'invalid', invalidAttribute, invalidReason);
+            callback(false);
+            return;
+          }
+          if(model.bindings.type == 'ajax/json') {
+            var binding = model.bindings.createEndpoint;
+            ajax(binding.method, binding.url, obj.attributes(), function(status, response) {
+              response ? response = JSON.parse(response) : {};
+              if(status == 200) {
+                withoutDirty(function() { response.forEachProp(function(attribute, value) { obj[attribute] = value; }); });
+                dirty.clear();
+                isNew = false;
+              }
+              callback(status == 200, status, response);
+              if(status == 200) {
+                trigger('afterCreate');
+                trigger('afterSave');
+              } else {
+                trigger('onCreateFail', 'ajax', status, response);
+                trigger('onSaveFail', 'ajax', status, response);
+              }
+            });
+          } else throw 'unsupported model bindings type';
+        });
+      }
+      function update(callback) {
+        if(isNew) throw 'update should only be called when isNew is false';
+        trigger('beforeUpdate');
+        trigger('beforeSave');
+        obj.validate(function(valid, invalidAttribute, invalidReason) {
+          if(!valid) {
+            trigger('onUpdateFail', 'invalid', invalidAttribute, invalidReason);
+            trigger('onSaveFail', 'invalid', invalidAttribute, invalidReason);
+            callback(false);
+            return;
+          }
+          if(model.bindings.type == 'ajax/json') {
+            var binding = model.bindings.updateEndpoint;
+            ajax(binding.method, binding.url, obj.attributes(), function(status, response) {
+              response ? response = JSON.parse(response) : {};
+              if(status == 200) {
+                withoutDirty(function() { response.forEachProp(function(attribute, value) { obj[attribute] = value; }); });
+                dirty.clear();
+                isNew = false;
+              }
+              callback(status == 200, status, response);
+              if(status == 200) {
+                trigger('afterUpdate');
+                trigger('afterSave');
+              } else {
+                trigger('onUpdateFail', 'ajax', status, response);
+                trigger('onSaveFail', 'ajax', status, response);
+              }
+            });
+          } else throw 'unsupported model bindings type';
+        });
+      }
+      rop(obj, 'save', function(callback) {
+        if(isNew) create(callback);
+        else update(callback);
+      });
+      model.attributes.forEachProp(function(attribute) {
+        var attributeValue = null;
+        Object.defineProperty(obj, attribute, {
+          enumerable: true,
+          writable: true,
+          get: function() { return attributeValue; },
+          set: function(v) {
+            if(attributeValue === v) return;
+            markDirty(attribute);
+            trigger(attribute + 'Changed');
+            attributeValue = v;
+          }
+        });
+      });
+    });
+  }
+
+  function setBaseApiUrl(url) {
+    if(!url.endsWith('/')) url = url + '/';
+    baseApiUrl = url;
   }
 
   document.addEventListener('click', linkClickHandler);
@@ -291,6 +483,8 @@ function isFunction(v) { return !!(v instanceof Function); }
   var cparts = currentPath.split('/');
   var savedRoutes = [];
   var defaultTitle = 'Conduit';
+  var baseApiUrl = 'https://api.example.com/';
+  var models = [];
   window.conduit = {
     ajax: ajax,
     setHTML: setHTML,
@@ -302,6 +496,10 @@ function isFunction(v) { return !!(v instanceof Function); }
     getCookie: getCookie,
     clearCookies: clearCookies,
     setDefaultTitle: setDefaultTitle,
+    setBaseApiUrl: setBaseApiUrl,
+    models: models,
+    model: model,
+    hashSet: hashSet,
     redirect: redirect,
     decode: Base64.decode
   };
