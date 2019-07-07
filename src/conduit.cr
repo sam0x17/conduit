@@ -16,8 +16,9 @@ module Conduit
   end
 
   def self.write_template_file(path, project_path)
-    puts " + #{project_path}/#{path}".gsub("./", "")
     src = TemplateStorage.get(path).gets_to_end
+    path = path.gsub("gitignore", ".gitignore")
+    puts " + #{project_path}/#{path}".gsub("./", "")
     File.write(path, src)
   end
 
@@ -63,11 +64,11 @@ module Conduit
     create_dir("#{project_path}/public")
     create_file("#{project_path}/public/.keep")
     create_dir("#{project_path}/views")
-    create_file("#{project_path}/views/.keep")
     FileUtils.cd(project_path)
     write_template_file("js/conduit.js", project_path)
     write_template_file("js/routes.js", project_path)
     write_template_file("views/router.html", project_path)
+    write_template_file("gitignore", project_path)
     puts ""
     puts `git init`
     puts ""
@@ -96,6 +97,8 @@ module Conduit
     ensure_in_project_root_dir!
     check_s3cmd!
     pwd = `pwd`.strip
+    cfg = Path["~/.s3cfg"].expand.to_s
+    cfg = Path["./.s3cfg"].expand.to_s if File.exists?("./.s3cfg")
     if File.exists?("./.s3_bucket")
       s3_bucket = File.read("./.s3_bucket").strip
     else
@@ -138,7 +141,8 @@ module Conduit
         puts ""
         puts "deploying to s3://#{s3_bucket}..."
         puts ""
-        args = ["sync", "#{target_path}/", "s3://#{s3_bucket}/", "--acl-public", "--delete-removed", "--guess-mime-type", "--no-mime-magic", "--no-preserve", "--cf-invalidate"]
+        cfg = cfg.gsub(" ", "\\ ")
+        args = ["sync", "#{target_path}/", "s3://#{s3_bucket}/", "--acl-public", "--delete-removed", "--guess-mime-type", "--no-mime-magic", "--no-preserve", "--cf-invalidate", "--config=#{cfg}"]
         Process.run("s3cmd", args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
       end
       puts ""
