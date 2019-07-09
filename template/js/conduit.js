@@ -173,7 +173,7 @@ function isFunction(v) { return !!(v instanceof Function); }
       if(!title) title = defaultTitle;
       setTitle(title);
       var html = conduit.VIEWS[target];
-      if(!html) throw 'could not find pre-compiled template for "' + target + '"';
+      if(html === null || html === undefined) throw 'could not find pre-compiled template for "' + target + '"';
       html = Base64.decode(html);
       if(virtualNavigation) history.pushState(null, title, currentPath);
       setHTML(document.body, html);
