@@ -58,10 +58,11 @@ echo "verifying that packages work..."
 ./html-minifier --version || exit 1
 ./uglify-js --version || exit 1
 echo ""
-echo "compressing platform-specific binaries..."
-mv clean-css packages/ || exit 1
-mv html-minifier packages/ || exit 1
-mv uglify-js packages/ || exit 1
+echo "compressing binaries..."
+mkdir -p packages
+mv ./clean-css packages/clean-css || exit 1
+mv ./html-minifier packages/html-minifier || exit 1
+mv ./uglify-js packages/uglify-js || exit 1
 tar -czvf packages.tar.gz packages || exit 1
 echo ""
 ls -lh packages.tar.gz
