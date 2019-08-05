@@ -2,6 +2,8 @@
 CONDUIT_OS="unknown"
 if [[ $OSTYPE == "linux-gnu" ]]; then
   CONDUIT_OS="linux"
+elif [[ $OSTYPE == "linux-musl" ]]; then
+  CONDUIT_OS="linux"
 elif [[ $OSTYPE == "darwin"* ]]; then
   CONDUIT_OS="macos"
 fi
