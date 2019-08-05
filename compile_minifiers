@@ -62,9 +62,6 @@ echo "verifying that packages work..."
 ./uglify-js --version || exit 1
 echo ""
 echo "compressing platform-specific binaries..."
-mv *-linux linux-packages/ || exit 1
-mv *-macos macos-packages/ || exit 1
-mv *-alpine alpine-packages/ || exit 1
 mv clean-css packages/ || exit 1
 mv html-minifier packages/ || exit 1
 mv uglify-js packages/ || exit 1
