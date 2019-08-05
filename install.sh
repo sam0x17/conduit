@@ -6,6 +6,8 @@ echo "checking environment"
 CONDUIT_PLATFORM="linux"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then # linux
   echo " > platform: linux"
+elif [[ "$OSTYPE" == "linux-musl" ]]; then # linux
+  echo " > platform: linux"
 elif [[ "$OSTYPE" == "darwin"* ]]; then # macos
   CONDUIT_PLATFORM="macos"
   echo " > platform: macos"
