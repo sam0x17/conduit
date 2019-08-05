@@ -7,7 +7,8 @@ CONDUIT_PLATFORM="linux"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then # linux
   echo " > platform: linux"
 elif [[ "$OSTYPE" == "linux-musl" ]]; then # linux
-  echo " > platform: linux"
+  echo " > platform: alpine"
+  CONDUIT_PLATFORM="alpine"
 elif [[ "$OSTYPE" == "darwin"* ]]; then # macos
   CONDUIT_PLATFORM="macos"
   echo " > platform: macos"

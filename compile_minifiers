@@ -3,7 +3,7 @@ CONDUIT_OS="unknown"
 if [[ $OSTYPE == "linux-gnu" ]]; then
   CONDUIT_OS="linux"
 elif [[ $OSTYPE == "linux-musl" ]]; then
-  CONDUIT_OS="linux"
+  CONDUIT_OS="alpine"
 elif [[ $OSTYPE == "darwin"* ]]; then
   CONDUIT_OS="macos"
 fi
@@ -11,6 +11,7 @@ echo "platform: $CONDUIT_OS"
 ORIG=`pwd` || exit 1
 rm -f linux-packages.tar.gz
 rm -f macos-packages.tar.gz
+rm -f alpine-packages.tar.gz
 echo "checking prerequisites..."
 git --version || exit 1
 node --version || exit 1
@@ -31,6 +32,8 @@ pkg -t node10-linux . || exit 1
 mv uglify-js $ORIG/bin/uglify-js-linux || exit 1
 pkg -t node10-macos . || exit 1
 mv uglify-js $ORIG/bin/uglify-js-macos || exit 1
+pkg -t node10-alpine . || exit 1
+mv uglify-js $ORIG/bin/uglify-js-alpine || exit 1
 cd .. || exit 1
 rm -rf uglify-js || exit 1
 echo ""
@@ -43,6 +46,8 @@ pkg -t node10-linux . || exit 1
 mv clean-css-cli $ORIG/bin/clean-css-linux || exit 1
 pkg -t node10-macos . || exit 1
 mv clean-css-cli $ORIG/bin/clean-css-macos || exit 1
+pkg -t node10-alpine . || exit 1
+mv clean-css-cli $ORIG/bin/clean-css-alpine || exit 1
 cd .. || exit 1
 rm -rf clean-css-cli || exit 1
 echo ""
@@ -55,6 +60,8 @@ pkg -t node10-linux . || exit 1
 mv html-minifier $ORIG/bin/html-minifier-linux || exit 1
 pkg -t node10-macos . || exit 1
 mv html-minifier $ORIG/bin/html-minifier-macos || exit 1
+pkg -t node10-alpine . || exit 1
+mv html-minifier $ORIG/bin/html-minifier-alpine || exit 1
 cd .. || exit 1
 rm -rf html-minifier || exit 1
 cd $ORIG || exit 1
@@ -68,21 +75,28 @@ echo ""
 echo "compressing platform-specific binaries..."
 mkdir -p linux-packages || exit 1
 mkdir -p macos-packages || exit 1
+mkdir -p alpine-packages || exit 1
 rm -rf linux-packages/* || exit 1
 rm -rf macos-packages/* || exit 1
+rm -rf alpine-packages/* || exit 1
 mv *-linux linux-packages/ || exit 1
 mv *-macos macos-packages/ || exit 1
+mv *-alpine alpine-packages/ || exit 1
 rm -f *.tar.gz
 tar -zcvf linux-packages.tar.gz linux-packages || exit 1
 tar -zcvf macos-packages.tar.gz macos-packages || exit 1
+tar -zcvf alpine-packages.tar.gz alpine-packages || exit 1
 echo ""
 ls -lh linux-packages.tar.gz 
 ls -lh macos-packages.tar.gz
-rm -rf linux-packages macos-packages || exit 1
+ls -lh alpine-packages.tar.gz
+rm -rf linux-packages macos-packages alpine-packages || exit 1
 mkdir -p linux-packages || exit 1
 mkdir -p macos-packages || exit 1
+mkdir -p alpine-packages || exit 1
 mv linux-packages.tar.gz linux-packages/packages.tar.gz || exit 1
 mv macos-packages.tar.gz macos-packages/packages.tar.gz || exit 1
+mv alpine-packages.tar.gz alpine-packages/packages.tar.gz || exit 1
 echo ""
 echo "done."
 echo ""
