@@ -10,9 +10,6 @@ fi
 echo "platform: $CONDUIT_OS"
 rm -rf bin/* || exit 1
 ORIG=`pwd` || exit 1
-rm -f linux-packages.tar.gz
-rm -f macos-packages.tar.gz
-rm -f alpine-packages.tar.gz
 echo "checking prerequisites..."
 git --version || exit 1
 node --version || exit 1
