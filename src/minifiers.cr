@@ -3,26 +3,15 @@ require "file_utils"
 
 module Conduit::Minifiers
   PKG_DIR = "/tmp/conduit-minifiers"
-  {% if flag?(:linux) %}
-    PLATFORM = "linux"
-  {% elsif flag?(:darwin) %}
-    PLATFORM = "macos"
-  {% end %}
-  CLEAN_CSS_PATH = "#{PKG_DIR}/#{PLATFORM}-packages/clean-css-#{PLATFORM}"
-  HTML_MINIFIER_PATH = "#{PKG_DIR}/#{PLATFORM}-packages/html-minifier-#{PLATFORM}"
-  UGLIFY_PATH = "#{PKG_DIR}/#{PLATFORM}-packages/uglify-js-#{PLATFORM}"
+  CLEAN_CSS_PATH = "#{PKG_DIR}/packages/clean-css"
+  HTML_MINIFIER_PATH = "#{PKG_DIR}/packages/html-minifier"
+  UGLIFY_PATH = "#{PKG_DIR}/packages/uglify-js"
   HTML_MINIFIER_OPTIONS = "--case-sensitive --conservative-collapse --minify-css=true --minify-js=true --use-short-doctype --remove-tag-whitespace --remove-script-type-attributes --remove-comments --minify-css --minify-js --collapse-whitespace --collapse-inline-tag-whitespace"
   CLEAN_CSS_OPTIONS = "--skip-rebase"
 
   class MinifierStorage
     extend BakedFileSystem
-    {% if flag?(:linux) %}
-      bake_folder "../bin/linux-packages"
-    {% elsif flag?(:darwin) %}
-      bake_folder "../bin/macos-packages"
-    {% else %}
-      raise "unsupported platform"
-    {% end %}
+    bake_folder "../bin/packages"
   end
 
   def self.initialize

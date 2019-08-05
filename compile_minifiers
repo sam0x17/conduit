@@ -8,6 +8,7 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   CONDUIT_OS="macos"
 fi
 echo "platform: $CONDUIT_OS"
+rm -rf bin/* || exit 1
 ORIG=`pwd` || exit 1
 rm -f linux-packages.tar.gz
 rm -f macos-packages.tar.gz
@@ -28,12 +29,8 @@ git clone git@github.com:mishoo/UglifyJS2.git || exit 1
 cd UglifyJS2 || exit 1
 git checkout `git describe --tags` || exit 1
 npm install || exit 1
-pkg -t node10-linux . || exit 1
-mv uglify-js $ORIG/bin/uglify-js-linux || exit 1
-pkg -t node10-macos . || exit 1
-mv uglify-js $ORIG/bin/uglify-js-macos || exit 1
-pkg -t node10-alpine . || exit 1
-mv uglify-js $ORIG/bin/uglify-js-alpine || exit 1
+pkg -t node10-$CONDUIT_OS . || exit 1
+mv uglify-js $ORIG/bin/uglify-js || exit 1
 cd .. || exit 1
 rm -rf uglify-js || exit 1
 echo ""
@@ -42,12 +39,8 @@ git clone git@github.com:jakubpawlowicz/clean-css-cli.git || exit 1
 cd clean-css-cli || exit 1
 git checkout `git describe --tags` || exit 1
 npm install || exit 1
-pkg -t node10-linux . || exit 1
-mv clean-css-cli $ORIG/bin/clean-css-linux || exit 1
-pkg -t node10-macos . || exit 1
-mv clean-css-cli $ORIG/bin/clean-css-macos || exit 1
-pkg -t node10-alpine . || exit 1
-mv clean-css-cli $ORIG/bin/clean-css-alpine || exit 1
+pkg -t node10-$CONDUIT_OS . || exit 1
+mv clean-css-cli $ORIG/bin/clean-css || exit 1
 cd .. || exit 1
 rm -rf clean-css-cli || exit 1
 echo ""
@@ -56,47 +49,31 @@ git clone git@github.com:kangax/html-minifier.git || exit 1
 cd html-minifier || exit 1
 git checkout `git describe --tags` || exit 1
 npm install || exit 1
-pkg -t node10-linux . || exit 1
-mv html-minifier $ORIG/bin/html-minifier-linux || exit 1
-pkg -t node10-macos . || exit 1
-mv html-minifier $ORIG/bin/html-minifier-macos || exit 1
-pkg -t node10-alpine . || exit 1
-mv html-minifier $ORIG/bin/html-minifier-alpine || exit 1
+pkg -t node10-$CONDUIT_OS . || exit 1
+mv html-minifier $ORIG/bin/html-minifier || exit 1
 cd .. || exit 1
 rm -rf html-minifier || exit 1
 cd $ORIG || exit 1
 cd bin || exit 1
 echo ""
 echo "verifying that packages work..."
-./clean-css-$CONDUIT_OS --version || exit 1
-./html-minifier-$CONDUIT_OS --version || exit 1
-./uglify-js-$CONDUIT_OS --version || exit 1
+./clean-css --version || exit 1
+./html-minifier --version || exit 1
+./uglify-js --version || exit 1
 echo ""
 echo "compressing platform-specific binaries..."
-mkdir -p linux-packages || exit 1
-mkdir -p macos-packages || exit 1
-mkdir -p alpine-packages || exit 1
-rm -rf linux-packages/* || exit 1
-rm -rf macos-packages/* || exit 1
-rm -rf alpine-packages/* || exit 1
 mv *-linux linux-packages/ || exit 1
 mv *-macos macos-packages/ || exit 1
 mv *-alpine alpine-packages/ || exit 1
-rm -f *.tar.gz
-tar -zcvf linux-packages.tar.gz linux-packages || exit 1
-tar -zcvf macos-packages.tar.gz macos-packages || exit 1
-tar -zcvf alpine-packages.tar.gz alpine-packages || exit 1
+mv clean-css packages/ || exit 1
+mv html-minifier packages/ || exit 1
+mv uglify-js packages/ || exit 1
+tar -czvf packages.tar.gz packages || exit 1
 echo ""
-ls -lh linux-packages.tar.gz 
-ls -lh macos-packages.tar.gz
-ls -lh alpine-packages.tar.gz
-rm -rf linux-packages macos-packages alpine-packages || exit 1
-mkdir -p linux-packages || exit 1
-mkdir -p macos-packages || exit 1
-mkdir -p alpine-packages || exit 1
-mv linux-packages.tar.gz linux-packages/packages.tar.gz || exit 1
-mv macos-packages.tar.gz macos-packages/packages.tar.gz || exit 1
-mv alpine-packages.tar.gz alpine-packages/packages.tar.gz || exit 1
+ls -lh packages.tar.gz
+rm -rf packages || exit 1
+mkdir -p packages || exit 1
+mv packages.tar.gz packages/packages.tar.gz || exit 1
 echo ""
 echo "done."
 echo ""
