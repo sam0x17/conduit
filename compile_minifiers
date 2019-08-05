@@ -61,7 +61,7 @@ cd $ORIG || exit 1
 cd bin || exit 1
 echo ""
 echo "verifying that packages work..."
-chmod * +x
+chmod -R . +x
 ls -la
 ./clean-css-$CONDUIT_OS --version || exit 1
 ./html-minifier-$CONDUIT_OS --version || exit 1
