@@ -178,7 +178,7 @@ function isFunction(v) { return !!(v instanceof Function); }
       if(virtualNavigation) history.pushState(null, title, currentPath);
       setHTML(document.body, html);
       triggerOnload();
-      if(window.performance && window.performance.navigation.type != 1) window.scrollTo(0, 0); 
+      window.scrollTo(0, 0); 
       if(conduit.onNavigate) conduit.onNavigate();
     }
   }
