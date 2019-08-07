@@ -18,6 +18,6 @@ dependencies:
   tempdir:
     github: sam0x17/tempdir
 
-crystal: 0.29.0
+crystal: 0.30.0
 
 license: MIT
