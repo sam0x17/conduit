@@ -94,8 +94,8 @@ module Conduit
   end
 
   def self.deploy
-    ensure_in_project_root_dir!
     check_s3cmd!
+    ensure_in_project_root_dir!
     pwd = `pwd`.strip
     cfg = Path["~/.s3cfg"].expand.to_s
     cfg = Path["./.s3cfg"].expand.to_s if File.exists?("./.s3cfg")
@@ -171,7 +171,7 @@ module Conduit
   end
 
   def self.check_s3cmd!
-    if `which s3cmd` == ""
+    if `s3cmd --version` == ""
       if `which python` == ""
         puts "error: python must be installed to use conduit for deploys"
         puts "please install python and try again"
