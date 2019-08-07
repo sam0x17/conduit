@@ -8,7 +8,7 @@ require "./compiler"
 require "./devserver"
 
 module Conduit
-  VERSION = "0.1.0"
+  VERSION = "0.1.4"
 
   class TemplateStorage
     extend BakedFileSystem
