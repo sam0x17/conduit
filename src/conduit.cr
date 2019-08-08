@@ -143,7 +143,7 @@ module Conduit
         puts ""
         cfg = cfg.gsub(" ", "\\ ")
         args = ["sync", "#{target_path}/", "s3://#{s3_bucket}/", "--acl-public", "--delete-removed", "--guess-mime-type", "--no-mime-magic", "--no-preserve", "--cf-invalidate", "--config=#{cfg}"]
-        Process.run("s3cmd", args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
+        Process.run(`command -v s3cmd`.strip, args, nil, false, false, Process::Redirect::Close, Process::Redirect::Inherit, Process::Redirect::Inherit, nil)
       end
       puts ""
       if File.exists?("./.deploy_action")

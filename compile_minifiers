@@ -54,9 +54,9 @@ cd $ORIG || exit 1
 cd bin || exit 1
 echo ""
 echo "verifying that packages work..."
-./clean-css --version || exit 1
-./html-minifier --version || exit 1
-./uglify-js --version || exit 1
+./clean-css --version
+./html-minifier --version
+./uglify-js --version
 echo ""
 echo "compressing binaries..."
 mkdir -p packages
